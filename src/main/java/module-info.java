@@ -5,4 +5,6 @@ module com.calvinnordstrom.cnpaint {
 
     opens com.calvinnordstrom.cnpaint to javafx.fxml;
     exports com.calvinnordstrom.cnpaint;
+    exports com.calvinnordstrom.cnpaint.controller;
+    opens com.calvinnordstrom.cnpaint.controller to javafx.fxml;
 }
