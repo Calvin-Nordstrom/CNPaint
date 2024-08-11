@@ -19,7 +19,7 @@ public class Main extends Application {
 
     @Override
     public void stop() {
-        System.out.println("Prompt for save or exit");
+        System.out.println("Prompt for save");
     }
 
     public static void main(String[] args) {
