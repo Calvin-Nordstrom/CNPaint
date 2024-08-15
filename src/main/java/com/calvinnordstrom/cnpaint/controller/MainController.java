@@ -4,7 +4,6 @@ import com.calvinnordstrom.cnpaint.model.MainModel;
 import com.calvinnordstrom.cnpaint.view.MainView;
 import javafx.application.Platform;
 import javafx.scene.Parent;
-import javafx.scene.input.ScrollEvent;
 
 public class MainController {
     private final MainModel model;
@@ -19,18 +18,10 @@ public class MainController {
 
     private void initListeners() {
         view.addMenuItemListener("close", _ -> close());
-
-        view.addScrollPaneListener("scrollPane", this::zoomEditor);
     }
 
     public void close() {
         Platform.exit();
-    }
-
-    public void zoomEditor(ScrollEvent event) {
-        if (event.isControlDown()) {
-            event.consume();
-        }
     }
 
     public Parent getView() {

@@ -1,27 +1,36 @@
 package com.calvinnordstrom.cnpaint.view;
 
+import com.calvinnordstrom.cnpaint.Main;
+import com.calvinnordstrom.cnpaint.event.PaneEventHandler;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.StackPane;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class MainView {
-    private final VBox mainView;
+    private final BorderPane mainView;
     private final Map<String, MenuItem> menuItems;
     private final Map<String, Pane> panes;
+    private final int maxZooms = 10;
+    private final int minZooms = -15;
+    private int zooms = 0;
 
     public MainView() {
-        mainView = new VBox();
+        mainView = new BorderPane();
         menuItems = new HashMap<>();
         panes = new HashMap<>();
 
@@ -31,7 +40,7 @@ public class MainView {
 
     private void initMenuBar() {
         MenuBar menuBar = new MenuBar();
-        mainView.getChildren().add(menuBar);
+        mainView.setTop(menuBar);
 
         Menu fileMenu = new Menu("File");
         addMenuItemToMenu(fileMenu, new MenuItem("Close"), "close");
@@ -45,37 +54,47 @@ public class MainView {
     }
 
     private void initImageEditor() {
-        VBox vBox = new VBox();
-        mainView.getChildren().add(vBox);
+        StackPane stackPane = new StackPane();
+        stackPane.setStyle("-fx-background-color: grey;");
+        mainView.setCenter(stackPane);
 
-        ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setHvalue(0.5);
-        scrollPane.setVvalue(0.5);
-        scrollPane.setPannable(true);
-        vBox.getChildren().add(scrollPane);
+        ZoomPane pane = new ZoomPane();
 
-        AnchorPane anchorPane = new AnchorPane();
-        anchorPane.setPrefWidth(3200);
-        anchorPane.setPrefHeight(1600);
-        anchorPane.setStyle("-fx-background-color: grey;");
-        anchorPane.setOnMouseDragged(event -> {
-            if (event.isSecondaryButtonDown() || event.isPrimaryButtonDown()) {
-                event.consume();
-            }
+        ImageView imageView = new ImageView();
+        Image image = new Image(String.valueOf(Main.class.getResource("IMG_2878.PNG")));
+        imageView.setImage(image);
+        imageView.setFitWidth(image.getWidth());
+        imageView.setFitHeight(image.getHeight());
+
+        ImageView imageView1 = new ImageView();
+        Image image1 = new Image(String.valueOf(Main.class.getResource("IMG_3698.jpg")));
+        imageView1.setImage(image1);
+        imageView1.setFitWidth(image1.getWidth());
+        imageView1.setFitHeight(image1.getHeight());
+
+        pane.getChildren().addAll(imageView1, imageView);
+
+        Group group = new Group();
+        group.getChildren().add(pane);
+
+        PaneEventHandler paneEventHandler = new PaneEventHandler(pane);
+        stackPane.addEventFilter(MouseEvent.MOUSE_PRESSED, paneEventHandler.getOnMousePressed());
+        stackPane.addEventFilter(MouseEvent.MOUSE_DRAGGED, paneEventHandler.getOnMouseDragged());
+        stackPane.addEventFilter(ScrollEvent.SCROLL, paneEventHandler.getOnScroll());
+
+        stackPane.getChildren().add(pane);
+
+//        pane.layoutBoundsProperty().addListener((observable, oldBounds, newBounds) -> {
+//            double width = newBounds.getWidth();
+//            double height = newBounds.getHeight();
+//            System.out.println("Pane Width: " + width + ", Pane Height: " + height);
+//        });
+
+        pane.getChildren().getFirst().layoutBoundsProperty().addListener((observable, oldBounds, newBounds) -> {
+            double width = newBounds.getWidth();
+            double height = newBounds.getHeight();
+            System.out.println("Pane Width: " + width + ", Pane Height: " + height);
         });
-        addPaneToScrollPane(scrollPane, anchorPane, "scrollPane");
-
-        AnchorPane anchorPane1 = new AnchorPane();
-        anchorPane1.setPrefWidth(1280);
-        anchorPane1.setPrefHeight(720);
-        anchorPane1.setStyle("-fx-background-color: white;");
-        anchorPane1.translateXProperty()
-                .bind(anchorPane.widthProperty().subtract(anchorPane1.widthProperty())
-                        .divide(2));
-        anchorPane1.translateYProperty()
-                .bind(anchorPane.heightProperty().subtract(anchorPane1.heightProperty())
-                        .divide(2));
-        anchorPane.getChildren().add(anchorPane1);
     }
 
     public void addMenuItemListener(String key, EventHandler<ActionEvent> handler) {
