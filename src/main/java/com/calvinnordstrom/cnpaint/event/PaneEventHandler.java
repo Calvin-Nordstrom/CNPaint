@@ -20,8 +20,8 @@ public class PaneEventHandler {
     public EventHandler<MouseEvent> getOnMousePressed() {
         return event -> {
             if (!event.isMiddleButtonDown()) return;
-            dragContext.x = event.getSceneX();
-            dragContext.y = event.getSceneY();
+            dragContext.x = event.getX();
+            dragContext.y = event.getY();
             dragContext.dx = pane.getTranslateX();
             dragContext.dy = pane.getTranslateY();
         };
@@ -30,8 +30,8 @@ public class PaneEventHandler {
     public EventHandler<MouseEvent> getOnMouseDragged() {
         return event -> {
             if (!event.isMiddleButtonDown()) return;
-            pane.setTranslateX(dragContext.dx + event.getSceneX() - dragContext.x);
-            pane.setTranslateY(dragContext.dy + event.getSceneY() - dragContext.y);
+            pane.setTranslateX(dragContext.dx + event.getX() - dragContext.x);
+            pane.setTranslateY(dragContext.dy + event.getY() - dragContext.y);
         };
     }
 
@@ -50,10 +50,10 @@ public class PaneEventHandler {
             scale = Math.clamp(scale, MIN_SCALE, MAX_SCALE);
 
             double f = (scale / oldScale) - 1;
-            double dx = (event.getSceneX()
+            double dx = (event.getX()
                     - (pane.getBoundsInParent().getWidth() / 2
                     + pane.getBoundsInParent().getMinX()));
-            double dy = (event.getSceneY()
+            double dy = (event.getY()
                     - (pane.getBoundsInParent().getHeight() / 2
                     + pane.getBoundsInParent().getMinY()));
 
