@@ -1,7 +1,7 @@
 package com.calvinnordstrom.cnpaint.event;
 
 import com.calvinnordstrom.cnpaint.util.DragContext;
-import com.calvinnordstrom.cnpaint.view.ZoomPane;
+import com.calvinnordstrom.cnpaint.view.node.ZoomPane;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
