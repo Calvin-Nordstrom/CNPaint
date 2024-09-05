@@ -1,4 +1,4 @@
-package com.calvinnordstrom.cnpaint.input;
+package com.calvinnordstrom.cnpaint.event;
 
 import javafx.scene.input.KeyCode;
 

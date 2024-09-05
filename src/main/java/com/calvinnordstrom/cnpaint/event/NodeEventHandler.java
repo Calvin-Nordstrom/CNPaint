@@ -1,7 +1,8 @@
 package com.calvinnordstrom.cnpaint.event;
 
+import com.calvinnordstrom.cnpaint.property.ImageScale;
 import com.calvinnordstrom.cnpaint.util.DragContext;
-import com.calvinnordstrom.cnpaint.view.node.ZoomPane;
+import com.calvinnordstrom.cnpaint.view.ZoomPane;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
@@ -29,11 +30,11 @@ public class NodeEventHandler {
     public EventHandler<MouseEvent> getOnMouseDragged() {
         return event -> {
             if (!event.isPrimaryButtonDown()) return;
-            double scale = pane.getScale();
+            double scale = ImageScale.getScale();
             Node node = (Node) event.getSource();
             node.setTranslateX(dragContext.dx + ((event.getSceneX() - dragContext.x) / scale));
             node.setTranslateY(dragContext.dy + ((event.getSceneY() - dragContext.y) / scale));
-            event.consume();
+            event.consume(); // needed?
         };
     }
 }

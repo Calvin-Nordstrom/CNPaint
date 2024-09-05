@@ -1,12 +1,11 @@
 package com.calvinnordstrom.cnpaint;
 
 import com.calvinnordstrom.cnpaint.controller.MainController;
-import com.calvinnordstrom.cnpaint.input.KeyListener;
+import com.calvinnordstrom.cnpaint.event.KeyListener;
 import com.calvinnordstrom.cnpaint.model.MainModel;
 import com.calvinnordstrom.cnpaint.view.MainView;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 
 import java.io.IOException;
