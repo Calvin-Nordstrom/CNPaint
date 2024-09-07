@@ -1,14 +1,21 @@
 package com.calvinnordstrom.cnpaint.property;
 
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 
 public class MousePosition {
     private static MousePosition instance;
     private final DoubleProperty x = new SimpleDoubleProperty(0);
     private final DoubleProperty y = new SimpleDoubleProperty(0);
+    private final IntegerProperty intX = new SimpleIntegerProperty(0);
+    private final IntegerProperty intY = new SimpleIntegerProperty(0);
 
-    private MousePosition() {}
+    private MousePosition() {
+        x.addListener((_, _, _) -> intX.set(round(x.get())));
+        y.addListener((_, _, _) -> intY.set(round(y.get())));
+    }
 
     public static double getX() {
         return getInstance().x.get();
@@ -34,10 +41,22 @@ public class MousePosition {
         return getInstance().y;
     }
 
+    public static IntegerProperty xIntProperty() {
+        return getInstance().intX;
+    }
+
+    public static IntegerProperty yIntProperty() {
+        return getInstance().intY;
+    }
+
     public static MousePosition getInstance() {
         if (instance == null) {
             instance = new MousePosition();
         }
         return instance;
+    }
+
+    private static int round(double value) {
+        return value < 0 ? (int) Math.floor(value) : (int) value;
     }
 }

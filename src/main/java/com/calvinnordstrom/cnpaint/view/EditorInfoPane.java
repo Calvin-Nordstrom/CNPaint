@@ -41,8 +41,10 @@ public class EditorInfoPane extends BorderPane {
     private void initImageInfo() {
         DefaultLabel mouseLocation = new DefaultLabel();
         mouseLocation.setFontIcon(FontIcon.of(Entypo.MOUSE_POINTER), 16, Color.WHITE);
-        mouseLocation.textProperty().bind(MousePosition.xProperty().asString("%.0f, ")
-                .concat(MousePosition.yProperty().asString("%.0f")));
+//        mouseLocation.textProperty().bind(MousePosition.xProperty().asString("%.0f, ")
+//                .concat(MousePosition.yProperty().asString("%.0f")));
+        mouseLocation.textProperty().bind(MousePosition.xIntProperty().asString()
+                .concat(", ").concat(MousePosition.yIntProperty().asString()));
         mouseLocation.setStyle("-fx-text-fill: white;");
 
         DefaultLabel imageDimensions = new DefaultLabel();
