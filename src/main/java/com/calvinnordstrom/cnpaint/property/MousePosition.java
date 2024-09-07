@@ -5,8 +5,8 @@ import javafx.beans.property.SimpleDoubleProperty;
 
 public class MousePosition {
     private static MousePosition instance;
-    private final DoubleProperty x = new SimpleDoubleProperty(0.0d);
-    private final DoubleProperty y = new SimpleDoubleProperty(0.0d);
+    private final DoubleProperty x = new SimpleDoubleProperty(0);
+    private final DoubleProperty y = new SimpleDoubleProperty(0);
 
     private MousePosition() {}
 

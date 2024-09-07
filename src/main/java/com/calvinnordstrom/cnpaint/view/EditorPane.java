@@ -18,8 +18,13 @@ public class EditorPane extends StackPane {
     private Image image;
 
     public EditorPane() {
+        this(new Image(String.valueOf(Main.class.getResource("default.png"))));
+    }
+
+    public EditorPane(Image image) {
         zoomPane = new ZoomPane();
-        setImage(new Image(String.valueOf(Main.class.getResource("default.png"))));
+
+        setImage(image);
 
         init();
     }
@@ -29,10 +34,11 @@ public class EditorPane extends StackPane {
 //        Image cursor = new Image(String.valueOf(Main.class.getResource("cursor/editor_cursor.png")));
 //        setCursor(new ImageCursor(cursor, cursor.getWidth() / 2, cursor.getHeight() / 2));
         setCursor(Cursor.CROSSHAIR);
+        setMinSize(0, 0);
 
         Rectangle clip = new Rectangle();
-        widthProperty().addListener(((_, _, newValue) -> clip.setWidth((Double) newValue)));
-        heightProperty().addListener(((_, _, newValue) -> clip.setHeight((Double) newValue)));
+        widthProperty().addListener(((_, _, newValue) -> clip.setWidth((double) newValue)));
+        heightProperty().addListener(((_, _, newValue) -> clip.setHeight((double) newValue)));
         setClip(clip);
 
         Group group = new Group();

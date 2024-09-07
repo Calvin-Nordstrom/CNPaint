@@ -5,8 +5,8 @@ import javafx.beans.property.SimpleDoubleProperty;
 
 public class ImageBounds {
     private static ImageBounds instance;
-    private final DoubleProperty width = new SimpleDoubleProperty(0.0d);
-    private final DoubleProperty height = new SimpleDoubleProperty(0.0d);
+    private final DoubleProperty width = new SimpleDoubleProperty(0);
+    private final DoubleProperty height = new SimpleDoubleProperty(0);
 
     private ImageBounds() {}
 

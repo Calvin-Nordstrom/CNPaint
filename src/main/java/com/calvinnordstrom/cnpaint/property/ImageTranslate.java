@@ -5,8 +5,8 @@ import javafx.beans.property.SimpleDoubleProperty;
 
 public class ImageTranslate {
     private static ImageTranslate instance;
-    private final DoubleProperty translateX = new SimpleDoubleProperty(0.0d);
-    private final DoubleProperty translateY = new SimpleDoubleProperty(0.0d);
+    private final DoubleProperty translateX = new SimpleDoubleProperty(0);
+    private final DoubleProperty translateY = new SimpleDoubleProperty(0);
 
     private ImageTranslate() {}
 

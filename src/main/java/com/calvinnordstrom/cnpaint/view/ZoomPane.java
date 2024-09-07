@@ -10,8 +10,8 @@ public class ZoomPane extends StackPane {
     }
 
     private void init() {
-        scaleXProperty().bind(ImageScale.scaleProperty());
-        scaleYProperty().bind(ImageScale.scaleProperty());
+        scaleXProperty().bind(ImageScale.scaleProperty().divide(100));
+        scaleYProperty().bind(ImageScale.scaleProperty().divide(100));
         translateXProperty().bind(ImageTranslate.translateXProperty());
         translateYProperty().bind(ImageTranslate.translateYProperty());
     }
