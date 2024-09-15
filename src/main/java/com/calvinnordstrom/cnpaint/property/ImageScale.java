@@ -12,9 +12,7 @@ public class ImageScale {
     private final DoubleProperty scale = new SimpleDoubleProperty(DEFAULT_SCALE);
     private final DoubleProperty percent = new SimpleDoubleProperty(50);
 
-    private ImageScale() {
-        percent.addListener((_, _, newValue) -> setScale(fromPercent((double) newValue)));
-    }
+    private ImageScale() {}
 
     public static double getScale() {
         return getInstance().scale.get();

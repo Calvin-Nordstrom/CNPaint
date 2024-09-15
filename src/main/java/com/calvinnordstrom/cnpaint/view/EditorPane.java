@@ -1,32 +1,38 @@
 package com.calvinnordstrom.cnpaint.view;
 
 import com.calvinnordstrom.cnpaint.Main;
-import com.calvinnordstrom.cnpaint.event.PaneEventHandler;
 import com.calvinnordstrom.cnpaint.property.ImageBounds;
+import com.calvinnordstrom.cnpaint.property.ImageScale;
 import com.calvinnordstrom.cnpaint.property.MousePosition;
+import com.calvinnordstrom.cnpaint.util.DragContext;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
-import javafx.scene.Group;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.StackPane;
-import javafx.scene.shape.Rectangle;
 
 public class EditorPane extends StackPane {
-    private final ZoomPane zoomPane;
+    private final Canvas canvas;
     private Image image;
+    private double imageX = 0;
+    private double imageY = 0;
 
     public EditorPane() {
         this(new Image(String.valueOf(Main.class.getResource("default.png"))));
     }
 
     public EditorPane(Image image) {
-        zoomPane = new ZoomPane();
-
-        setImage(image);
+        canvas = new Canvas(image.getWidth(), image.getHeight());
 
         init();
+        initEventHandlers();
+
+        setImage(image);
     }
 
     private void init() {
@@ -36,37 +42,120 @@ public class EditorPane extends StackPane {
         setCursor(Cursor.CROSSHAIR);
         setMinSize(0, 0);
 
-        Rectangle clip = new Rectangle();
-        widthProperty().addListener(((_, _, newValue) -> clip.setWidth((double) newValue)));
-        heightProperty().addListener(((_, _, newValue) -> clip.setHeight((double) newValue)));
-        setClip(clip);
+        canvas.getGraphicsContext2D().setImageSmoothing(false);
+        canvas.widthProperty().bind(widthProperty());
+        canvas.heightProperty().bind(heightProperty());
+        getChildren().addAll(canvas);
 
-        Group group = new Group();
-        group.getChildren().add(zoomPane);
-        getChildren().add(zoomPane);
+        ImageBounds.setWidth(image.getWidth());
+        ImageBounds.setHeight(image.getHeight());
+    }
 
-        PaneEventHandler paneEventHandler = new PaneEventHandler(zoomPane);
-        addEventFilter(MouseEvent.MOUSE_PRESSED, paneEventHandler.getOnMousePressed());
-        addEventFilter(MouseEvent.MOUSE_DRAGGED, paneEventHandler.getOnMouseDragged());
-        addEventFilter(ScrollEvent.SCROLL, paneEventHandler.getOnScroll());
+    private void initEventHandlers() {
+        DragContext dragContext = new DragContext();
+
+        addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+            if (!event.isMiddleButtonDown()) return;
+            dragContext.x = event.getX();
+            dragContext.y = event.getY();
+            dragContext.dx = imageX;
+            dragContext.dy = imageY;
+        });
+        addEventFilter(MouseEvent.MOUSE_DRAGGED, event -> {
+            if (!event.isMiddleButtonDown()) return;
+            imageX = dragContext.dx + event.getX() - dragContext.x;
+            imageY = dragContext.dy + event.getY() - dragContext.y;
+            drawImage(imageX, imageY);
+        });
+        addEventFilter(ScrollEvent.SCROLL, event -> {
+            if (!event.isControlDown()) return;
+            double oldScale = ImageScale.getScale() / 100;
+
+            if (event.getDeltaY() > 0) {
+                ImageScale.upscale();
+            } else {
+                ImageScale.downscale();
+            }
+
+            double f = (ImageScale.getScale() / 100) / oldScale;
+            double mouseX = event.getX();
+            double mouseY = event.getY();
+            imageX = mouseX - (mouseX - imageX) * f;
+            imageY = mouseY - (mouseY - imageY) * f;
+            drawImage(imageX, imageY);
+        });
+        addEventFilter(MouseEvent.MOUSE_MOVED, event -> {
+            MousePosition.setX((event.getX() - imageX) / (ImageScale.getScale() / 100));
+            MousePosition.setY((event.getY() - imageY) / (ImageScale.getScale() / 100));
+        });
+        heightProperty().addListener(((_, _, _) -> {
+            centerImage(ImageScale.DEFAULT_SCALE);
+        }));
+    }
+
+    public Image getImage() {
+        return image;
     }
 
     public void setImage(Image image) {
         this.image = image;
-        ImageBounds.setWidth(image.getWidth());
-        ImageBounds.setHeight(image.getHeight());
+    }
 
-        ImageView imageView = new ImageView();
-        imageView.setImage(image);
-        imageView.setFitWidth(image.getWidth());
-        imageView.setFitHeight(image.getHeight());
-        zoomPane.getChildren().addAll(imageView);
+    public void drawImage(double x, double y) {
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        clearCanvas();
+        double width = image.getWidth() * ImageScale.getScale() / 100;
+        double height = image.getHeight() * ImageScale.getScale() / 100;
+        gc.drawImage(image, x, y, width, height);
+        imageX = x;
+        imageY = y;
+    }
 
-        addEventFilter(MouseEvent.MOUSE_MOVED, event -> {
-            double relativeX = imageView.sceneToLocal(event.getSceneX(), event.getSceneY()).getX();
-            double relativeY = imageView.sceneToLocal(event.getSceneX(), event.getSceneY()).getY();
-            MousePosition.setX(relativeX);
-            MousePosition.setY(relativeY);
-        });
+    public void centerImage(double scale) {
+        ImageScale.setScale(scale);
+        double canvasCenterX = canvas.getWidth() / 2;
+        double canvasCenterY = canvas.getHeight() / 2;
+        double imageWidth = image.getWidth() * ImageScale.getScale() / 100;
+        double imageHeight = image.getHeight() * ImageScale.getScale() / 100;
+        double x = canvasCenterX - imageWidth / 2;
+        double y = canvasCenterY - imageHeight / 2;
+        drawImage(x, y);
+    }
+
+    private void clearCanvas() {
+        canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+    }
+
+    public void upscale() {
+        double oldScale = ImageScale.getScale() / 100;
+        ImageScale.upscale();
+        Point2D center = getImageCenter(oldScale);
+        drawImage(center.getX(), center.getY());
+    }
+
+    public void downscale() {
+        double oldScale = ImageScale.getScale() / 100;
+        ImageScale.downscale();
+        Point2D center = getImageCenter(oldScale);
+        drawImage(center.getX(), center.getY());
+    }
+
+    public ChangeListener<Number> getScaleSliderListener() {
+        return (ObservableValue<? extends Number> _, Number _, Number newValue) -> {
+            double oldScale = ImageScale.getScale() / 100;
+            ImageScale.setScale(ImageScale.fromPercent((double) newValue));
+            Point2D center = getImageCenter(oldScale);
+            drawImage(center.getX(), center.getY());
+        };
+    }
+
+    private Point2D getImageCenter(double oldScale) {
+        double imageCenterX = imageX + (image.getWidth() * oldScale) / 2;
+        double imageCenterY = imageY + (image.getHeight() * oldScale) / 2;
+        double newImageWidth = image.getWidth() * ImageScale.getScale() / 100;
+        double newImageHeight = image.getHeight() * ImageScale.getScale() / 100;
+        double x = imageCenterX - newImageWidth / 2;
+        double y = imageCenterY - newImageHeight / 2;
+        return new Point2D(x, y);
     }
 }

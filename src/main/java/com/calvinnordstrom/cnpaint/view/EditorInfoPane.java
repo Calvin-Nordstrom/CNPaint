@@ -10,7 +10,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import org.kordamp.ikonli.entypo.Entypo;
@@ -64,21 +63,22 @@ public class EditorInfoPane extends BorderPane {
         scaleLabel.textProperty().bind(ImageScale.scaleProperty().asString("%.0f").concat("%"));
         scaleLabel.setStyle("-fx-text-fill: white;");
 
-        DefaultButton minimizeButton = new DefaultButton();
-        minimizeButton.setFontIcon(FontIcon.of(Evaicons.MINIMIZE_OUTLINE), 20, Color.WHITE);
-        minimizeButton.addEventFilter(MouseEvent.MOUSE_CLICKED, _ -> ImageScale.downscale());
+        DefaultButton downscaleButton = new DefaultButton();
+        downscaleButton.setFontIcon(FontIcon.of(Evaicons.MINIMIZE_OUTLINE), 20, Color.WHITE);
+        mainView.buttons.put("downscaleButton", downscaleButton);
 
         Slider slider = new Slider(0, 100, 50);
         ImageScale.percentProperty().bind(slider.valueProperty());
         ImageScale.scaleProperty().addListener((_, _, newValue) -> {
             slider.setValue(ImageScale.toPercent((double) newValue));
         });
+        mainView.sliders.put("scaleSlider", slider);
 
-        DefaultButton maximizeButton = new DefaultButton();
-        maximizeButton.setFontIcon(FontIcon.of(Evaicons.MAXIMIZE_OUTLINE), 20, Color.WHITE);
-        maximizeButton.addEventFilter(MouseEvent.MOUSE_CLICKED, _ -> ImageScale.upscale());
+        DefaultButton upscaleButton = new DefaultButton();
+        upscaleButton.setFontIcon(FontIcon.of(Evaicons.MAXIMIZE_OUTLINE), 20, Color.WHITE);
+        mainView.buttons.put("upscaleButton", upscaleButton);
 
-        HBox sliderControls = new HBox(scaleLabel, new Spacer(10, 0), minimizeButton, slider, maximizeButton);
+        HBox sliderControls = new HBox(scaleLabel, new Spacer(10, 0), downscaleButton, slider, upscaleButton);
         sliderControls.setAlignment(Pos.CENTER);
 
         DefaultButton homeButton = new DefaultButton();
