@@ -27,12 +27,12 @@ public class EditorPane extends StackPane {
     }
 
     public EditorPane(Image image) {
-        canvas = new Canvas(image.getWidth(), image.getHeight());
+        canvas = new Canvas();
+
+        setImage(image);
 
         init();
         initEventHandlers();
-
-        setImage(image);
     }
 
     private void init() {
@@ -46,9 +46,6 @@ public class EditorPane extends StackPane {
         canvas.widthProperty().bind(widthProperty());
         canvas.heightProperty().bind(heightProperty());
         getChildren().addAll(canvas);
-
-        ImageBounds.setWidth(image.getWidth());
-        ImageBounds.setHeight(image.getHeight());
     }
 
     private void initEventHandlers() {
@@ -88,17 +85,14 @@ public class EditorPane extends StackPane {
             MousePosition.setX((event.getX() - imageX) / (ImageScale.getScale() / 100));
             MousePosition.setY((event.getY() - imageY) / (ImageScale.getScale() / 100));
         });
-        heightProperty().addListener(((_, _, _) -> {
-            centerImage(ImageScale.DEFAULT_SCALE);
-        }));
-    }
-
-    public Image getImage() {
-        return image;
-    }
-
-    public void setImage(Image image) {
-        this.image = image;
+        widthProperty().addListener((_, _, _) -> {
+            scaleToImage();
+            centerImage();
+        });
+        heightProperty().addListener((_, _, _) -> {
+            scaleToImage();
+            centerImage();
+        });
     }
 
     public void drawImage(double x, double y) {
@@ -111,8 +105,12 @@ public class EditorPane extends StackPane {
         imageY = y;
     }
 
-    public void centerImage(double scale) {
-        ImageScale.setScale(scale);
+    private void clearCanvas() {
+        canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+    }
+
+    public void centerImage() {
+        ImageScale.setScale(ImageScale.getDefaultEditorScale());
         double canvasCenterX = canvas.getWidth() / 2;
         double canvasCenterY = canvas.getHeight() / 2;
         double imageWidth = image.getWidth() * ImageScale.getScale() / 100;
@@ -122,8 +120,11 @@ public class EditorPane extends StackPane {
         drawImage(x, y);
     }
 
-    private void clearCanvas() {
-        canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+    public void scaleToImage() {
+        double widthRatio = image.getWidth() / canvas.getWidth();
+        double heightRatio = image.getHeight() / canvas.getHeight();
+        double ratio = Math.max(widthRatio, heightRatio);
+        ImageScale.setDefaultEditorScale(75 / ratio);
     }
 
     public void upscale() {
@@ -140,13 +141,14 @@ public class EditorPane extends StackPane {
         drawImage(center.getX(), center.getY());
     }
 
-    public ChangeListener<Number> getScaleSliderListener() {
-        return (ObservableValue<? extends Number> _, Number _, Number newValue) -> {
-            double oldScale = ImageScale.getScale() / 100;
-            ImageScale.setScale(ImageScale.fromPercent((double) newValue));
-            Point2D center = getImageCenter(oldScale);
-            drawImage(center.getX(), center.getY());
-        };
+    public Image getImage() {
+        return image;
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
+        ImageBounds.setWidth(image.getWidth());
+        ImageBounds.setHeight(image.getHeight());
     }
 
     private Point2D getImageCenter(double oldScale) {
@@ -157,5 +159,14 @@ public class EditorPane extends StackPane {
         double x = imageCenterX - newImageWidth / 2;
         double y = imageCenterY - newImageHeight / 2;
         return new Point2D(x, y);
+    }
+
+    public ChangeListener<Number> getChangeListener() {
+        return (ObservableValue<? extends Number> _, Number _, Number newValue) -> {
+            double oldScale = ImageScale.getScale() / 100;
+            ImageScale.setScale(ImageScale.fromPercent((double) newValue));
+            Point2D center = getImageCenter(oldScale);
+            drawImage(center.getX(), center.getY());
+        };
     }
 }

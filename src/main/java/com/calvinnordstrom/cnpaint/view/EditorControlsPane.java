@@ -16,11 +16,11 @@ import org.kordamp.ikonli.entypo.Entypo;
 import org.kordamp.ikonli.evaicons.Evaicons;
 import org.kordamp.ikonli.javafx.FontIcon;
 
-public class EditorInfoPane extends BorderPane {
+public class EditorControlsPane extends BorderPane {
     private final MainView mainView;
     private final HBox right;
 
-    public EditorInfoPane(MainView mainView) {
+    public EditorControlsPane(MainView mainView) {
         this.mainView = mainView;
         right = new HBox();
 

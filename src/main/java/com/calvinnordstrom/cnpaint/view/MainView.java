@@ -1,7 +1,6 @@
 package com.calvinnordstrom.cnpaint.view;
 
 import com.calvinnordstrom.cnpaint.Main;
-import com.calvinnordstrom.cnpaint.property.ImageScale;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -20,7 +19,7 @@ public class MainView {
     final Map<String, Slider> sliders;
     private final BorderPane mainView;
     private final EditorPane editorPane;
-    private final EditorInfoPane editorInfoPane;
+    private final EditorControlsPane editorControlsPane;
 
     public MainView() {
         menuItems = new HashMap<>();
@@ -29,7 +28,7 @@ public class MainView {
 
         mainView = new BorderPane();
         editorPane = new EditorPane();
-        editorInfoPane = new EditorInfoPane(this);
+        editorControlsPane = new EditorControlsPane(this);
 
         initTop();
         initCenter();
@@ -55,20 +54,20 @@ public class MainView {
     private void initCenter() {
         mainView.setCenter(editorPane);
 
-        Image image = new Image(String.valueOf(Main.class.getResource("IMG_2878.PNG")));
-        Image image1 = new Image(String.valueOf(Main.class.getResource("IMG_3698.JPG")));
-        Image image2 = new Image(String.valueOf(Main.class.getResource("test.png")));
-        Image image3 = new Image(String.valueOf(Main.class.getResource("default.png")));
-        editorPane.setImage(image);
+        Image image1 = new Image(String.valueOf(Main.class.getResource("IMG_2878.PNG")));
+        Image image2 = new Image(String.valueOf(Main.class.getResource("IMG_3698.JPG")));
+        Image image3 = new Image(String.valueOf(Main.class.getResource("test.png")));
+        Image image4 = new Image(String.valueOf(Main.class.getResource("default.png")));
+        editorPane.setImage(image1);
     }
 
     private void initBottom() {
-        mainView.setBottom(editorInfoPane);
+        mainView.setBottom(editorControlsPane);
 
         addButtonListener("downscaleButton", _ -> editorPane.downscale());
-        addSliderListener("scaleSlider", editorPane.getScaleSliderListener());
+        addSliderListener("scaleSlider", editorPane.getChangeListener());
         addButtonListener("upscaleButton", _ -> editorPane.upscale());
-        addButtonListener("centerImage", _ -> editorPane.centerImage(ImageScale.DEFAULT_SCALE));
+        addButtonListener("centerImage", _ -> editorPane.centerImage());
     }
 
     public Parent getView() {
