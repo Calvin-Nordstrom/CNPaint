@@ -4,12 +4,8 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 
 /**
- * {@code ImageScale} is a singleton class responsible for storing and
- * manipulating image scale data used by this editor.
- * <p>
- * Because only one image can be open at a time, the
- * singleton design pattern grants the ability to access and manipulate the
- * image scale data from any part of the application.
+ * {@code ImageScale} is responsible for storing and manipulating the image
+ * scale for an editor.
  *
  * @author Calvin Nordstrom
  */
@@ -30,20 +26,23 @@ public class ImageScale {
      * The coefficient of which images are scaled by.
      */
     public static final double SCALE_FACTOR = 1.2d;
-    private static ImageScale instance;
     private final DoubleProperty scale = new SimpleDoubleProperty(DEFAULT_SCALE);
     private final DoubleProperty percent = new SimpleDoubleProperty(50);
-    private static double defaultEditorScale = DEFAULT_SCALE;
+    private double defaultEditorScale = DEFAULT_SCALE;
 
-    private ImageScale() {}
+    /**
+     * Constructs an {@code ImageScale} with the default scale and percent
+     * properties and the default editor scale attribute.
+     */
+    public ImageScale() {}
 
     /**
      * Returns the scale attribute.
      *
      * @return the scale
      */
-    public static double getScale() {
-        return getInstance().scale.get();
+    public double getScale() {
+        return scale.get();
     }
 
     /**
@@ -51,60 +50,58 @@ public class ImageScale {
      *
      * @return the default editor scale
      */
-    public static double getDefaultEditorScale() {
+    public double getDefaultEditorScale() {
         return defaultEditorScale;
     }
 
     /**
-     * Sets the scale attribute to the specified scale.
+     * Sets the scale property to the specified scale.
      *
      * @param scale the new scale
      */
-    public static void setScale(double scale) {
-        getInstance().scale.set(Math.clamp(scale, ImageScale.MIN_SCALE, ImageScale.MAX_SCALE));
+    public void setScale(double scale) {
+        this.scale.set(Math.clamp(scale, ImageScale.MIN_SCALE, ImageScale.MAX_SCALE));
     }
 
     /**
-     * Sets the default editor scale attribute to the specified scale.
+     * Sets the default editor scale property to the specified scale.
      *
      * @param scale the new scale
      */
-    public static void setDefaultEditorScale(double scale) {
+    public void setDefaultEditorScale(double scale) {
         defaultEditorScale = scale;
     }
 
     /**
-     * Returns the {@code DoubleProperty} associated with the scale of
-     * the image.
+     * Returns the {@code DoubleProperty} associated with the scale.
      *
      * @return the {@code DoubleProperty} scale
      */
-    public static DoubleProperty scaleProperty() {
-        return getInstance().scale;
+    public DoubleProperty scaleProperty() {
+        return scale;
     }
 
     /**
-     * Returns the {@code DoubleProperty} associated with the scale percent of
-     * the image.
+     * Returns the {@code DoubleProperty} associated with the scale percent.
      *
      * @return the {@code DoubleProperty} scale percent
      */
-    public static DoubleProperty percentProperty() {
-        return getInstance().percent;
+    public DoubleProperty percentProperty() {
+        return percent;
     }
 
     /**
      * Multiplies the scale by a factor of {@code SCALE_FACTOR}.
      */
-    public static void upscale() {
-        setScale(getInstance().scale.get() * SCALE_FACTOR);
+    public void upscale() {
+        setScale(scale.get() * SCALE_FACTOR);
     }
 
     /**
      * Divides the scale by a factor of {@code SCALE_FACTOR}.
      */
-    public static void downscale() {
-        setScale(getInstance().scale.get() / SCALE_FACTOR);
+    public void downscale() {
+        setScale(scale.get() / SCALE_FACTOR);
     }
 
     /**
@@ -134,18 +131,5 @@ public class ImageScale {
      */
     public static double fromPercent(double percent) {
         return Math.pow(Math.E, (Math.log(10) * percent) / 25);
-    }
-
-    /**
-     * Returns the singleton instance of the {@code ImageScale} class. An
-     * instance will be created if one does not already exist.
-     *
-     * @return the {@code ImageScale} singleton instance
-     */
-    public static ImageScale getInstance() {
-        if (instance == null) {
-            instance = new ImageScale();
-        }
-        return instance;
     }
 }

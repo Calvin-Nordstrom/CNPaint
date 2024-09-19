@@ -1,37 +1,40 @@
 package com.calvinnordstrom.cnpaint.view;
 
 import com.calvinnordstrom.cnpaint.Main;
+import com.calvinnordstrom.cnpaint.view.node.EditorTab;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Parent;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainView {
+public class MainView extends BorderPane {
     final Map<String, MenuItem> menuItems;
     final Map<String, Button> buttons;
     final Map<String, Slider> sliders;
-    private final BorderPane mainView;
-    private final EditorPane editorPane;
-    private final EditorControlsPane editorControlsPane;
+
+    private final TabPane tabPane;
+    private final ToolsPane toolsPane;
 
     public MainView() {
         menuItems = new HashMap<>();
         buttons = new HashMap<>();
         sliders = new HashMap<>();
 
-        mainView = new BorderPane();
-        editorPane = new EditorPane();
-        editorControlsPane = new EditorControlsPane(this);
+        tabPane = new TabPane();
+        toolsPane = new ToolsPane();
 
         initTop();
+        initLeft();
         initCenter();
+        initRight();
         initBottom();
     }
 
@@ -48,30 +51,53 @@ public class MainView {
 //        menuBar.setBorder(new Border(new BorderStroke(Color.BLACK, Color.BLACK, Color.BLACK, Color.BLACK,
 //                BorderStrokeStyle.NONE, BorderStrokeStyle.NONE, BorderStrokeStyle.SOLID, BorderStrokeStyle.NONE,
 //                CornerRadii.EMPTY, new BorderWidths(1), Insets.EMPTY)));
-        mainView.setTop(menuBar);
+        setTop(menuBar);
+    }
+
+    private void initLeft() {
+        VBox vBox = new VBox();
+        vBox.setStyle("-fx-background-color: rgb(64, 64, 64); -fx-padding: 3px;");
+        vBox.setBorder(new Border(new BorderStroke(Color.BLACK, Color.BLACK, Color.BLACK, Color.BLACK,
+                BorderStrokeStyle.NONE, BorderStrokeStyle.SOLID, BorderStrokeStyle.NONE, BorderStrokeStyle.NONE,
+                CornerRadii.EMPTY, new BorderWidths(1), Insets.EMPTY)));
+        vBox.setMinWidth(50);
+        setLeft(vBox);
     }
 
     private void initCenter() {
-        mainView.setCenter(editorPane);
-
         Image image1 = new Image(String.valueOf(Main.class.getResource("IMG_2878.PNG")));
         Image image2 = new Image(String.valueOf(Main.class.getResource("IMG_3698.JPG")));
         Image image3 = new Image(String.valueOf(Main.class.getResource("test.png")));
         Image image4 = new Image(String.valueOf(Main.class.getResource("default.png")));
-        editorPane.setImage(image1);
+
+        EditorPane editor1 = new EditorPane(image1);
+        EditorPane editor2 = new EditorPane(image2);
+
+        EditorTab one = new EditorTab("image1", editor1);
+        EditorTab two = new EditorTab("image2", editor2);
+        tabPane.getTabs().addAll(one, two);
+
+        tabPane.getSelectionModel().selectedItemProperty().addListener(((_, _, newValue) -> {
+            EditorTab tab = (EditorTab) newValue;
+            setBottom(tab.getEditorControls());
+        }));
+
+        setCenter(tabPane);
+    }
+
+    private void initRight() {
+        VBox vBox = new VBox();
+        vBox.setStyle("-fx-background-color: rgb(64, 64, 64); -fx-padding: 3px;");
+        vBox.setBorder(new Border(new BorderStroke(Color.BLACK, Color.BLACK, Color.BLACK, Color.BLACK,
+                BorderStrokeStyle.NONE, BorderStrokeStyle.NONE, BorderStrokeStyle.NONE, BorderStrokeStyle.SOLID,
+                CornerRadii.EMPTY, new BorderWidths(1), Insets.EMPTY)));
+        vBox.setMinWidth(400);
+        setRight(vBox);
     }
 
     private void initBottom() {
-        mainView.setBottom(editorControlsPane);
-
-        addButtonListener("downscaleButton", _ -> editorPane.downscale());
-        addSliderListener("scaleSlider", editorPane.getChangeListener());
-        addButtonListener("upscaleButton", _ -> editorPane.upscale());
-        addButtonListener("centerImage", _ -> editorPane.centerImage());
-    }
-
-    public Parent getView() {
-        return mainView;
+        EditorTab tab = (EditorTab) tabPane.getSelectionModel().selectedItemProperty().get();
+        setBottom(tab.getEditorControls());
     }
 
     /* ****************************************************************

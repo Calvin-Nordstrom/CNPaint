@@ -4,29 +4,28 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 
 /**
- * {@code ImageBounds} is a singleton class responsible for storing and
- * manipulating image bounds data used by this editor.
- * <p>
- * Because only one image can be open at a time, the
- * singleton design pattern grants the ability to access and manipulate the
- * image bounds data from any part of the application.
+ * {@code ImageBounds} is responsible for storing and manipulating the image
+ * bounds for an editor.
  *
  * @author Calvin Nordstrom
  */
 public class ImageBounds {
-    private static ImageBounds instance;
     private final DoubleProperty width = new SimpleDoubleProperty(0);
     private final DoubleProperty height = new SimpleDoubleProperty(0);
 
-    private ImageBounds() {}
+    /**
+     * Constructs an {@code ImageBounds} with the default width and height
+     * properties.
+     */
+    public ImageBounds() {}
 
     /**
      * Returns the width attribute.
      *
      * @return the width
      */
-    public static double getWidth() {
-        return getInstance().width.get();
+    public double getWidth() {
+        return width.get();
     }
 
     /**
@@ -34,8 +33,8 @@ public class ImageBounds {
      *
      * @param width the new width
      */
-    public static void setWidth(double width) {
-        getInstance().width.set(width);
+    public void setWidth(double width) {
+        this.width.set(width);
     }
 
     /**
@@ -44,8 +43,8 @@ public class ImageBounds {
      *
      * @return the {@code DoubleProperty} width
      */
-    public static DoubleProperty widthProperty() {
-        return getInstance().width;
+    public DoubleProperty widthProperty() {
+        return width;
     }
 
     /**
@@ -53,8 +52,8 @@ public class ImageBounds {
      *
      * @return the width
      */
-    public static double getHeight() {
-        return getInstance().height.get();
+    public double getHeight() {
+        return height.get();
     }
 
     /**
@@ -62,8 +61,8 @@ public class ImageBounds {
      *
      * @param height the new height
      */
-    public static void setHeight(double height) {
-        getInstance().height.set(height);
+    public void setHeight(double height) {
+        this.height.set(height);
     }
 
     /**
@@ -72,20 +71,7 @@ public class ImageBounds {
      *
      * @return the {@code DoubleProperty} height
      */
-    public static DoubleProperty heightProperty() {
-        return getInstance().height;
-    }
-
-    /**
-     * Returns the singleton instance of the {@code ImageBounds} class. An
-     * instance will be created if one does not already exist.
-     *
-     * @return the {@code ImageBounds} singleton instance
-     */
-    public static ImageBounds getInstance() {
-        if (instance == null) {
-            instance = new ImageBounds();
-        }
-        return instance;
+    public DoubleProperty heightProperty() {
+        return height;
     }
 }

@@ -25,6 +25,6 @@ public class MainController {
     }
 
     public Parent getView() {
-        return view.getView();
+        return view;
     }
 }

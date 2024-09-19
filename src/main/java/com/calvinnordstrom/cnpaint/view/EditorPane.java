@@ -14,10 +14,14 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 
-public class EditorPane extends StackPane {
+public class EditorPane extends BorderPane {
+    private final StackPane stackPane;
     private final Canvas canvas;
+    private final ImageBounds imageBounds;
+    private final ImageScale imageScale;
     private Image image;
     private double imageX = 0;
     private double imageY = 0;
@@ -27,7 +31,10 @@ public class EditorPane extends StackPane {
     }
 
     public EditorPane(Image image) {
+        stackPane = new StackPane();
         canvas = new Canvas();
+        imageBounds = new ImageBounds();
+        imageScale = new ImageScale();
 
         setImage(image);
 
@@ -36,70 +43,75 @@ public class EditorPane extends StackPane {
     }
 
     private void init() {
-        setStyle("-fx-background-color: rgb(80, 80, 80);");
+        setCenter(stackPane);
+        stackPane.setStyle("-fx-background-color: rgb(80, 80, 80);");
 //        Image cursor = new Image(String.valueOf(Main.class.getResource("cursor/editor_cursor.png")));
 //        setCursor(new ImageCursor(cursor, cursor.getWidth() / 2, cursor.getHeight() / 2));
-        setCursor(Cursor.CROSSHAIR);
-        setMinSize(0, 0);
+        stackPane.setCursor(Cursor.CROSSHAIR);
+        stackPane.setMinSize(0, 0);
 
         canvas.getGraphicsContext2D().setImageSmoothing(false);
-        canvas.widthProperty().bind(widthProperty());
-        canvas.heightProperty().bind(heightProperty());
-        getChildren().addAll(canvas);
+        canvas.widthProperty().bind(stackPane.widthProperty());
+        canvas.heightProperty().bind(stackPane.heightProperty());
+        stackPane.getChildren().addAll(canvas);
     }
 
     private void initEventHandlers() {
         DragContext dragContext = new DragContext();
 
-        addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+        stackPane.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
             if (!event.isMiddleButtonDown()) return;
             dragContext.x = event.getX();
             dragContext.y = event.getY();
             dragContext.dx = imageX;
             dragContext.dy = imageY;
         });
-        addEventFilter(MouseEvent.MOUSE_DRAGGED, event -> {
+        stackPane.addEventFilter(MouseEvent.MOUSE_DRAGGED, event -> {
             if (!event.isMiddleButtonDown()) return;
             imageX = dragContext.dx + event.getX() - dragContext.x;
             imageY = dragContext.dy + event.getY() - dragContext.y;
             drawImage(imageX, imageY);
         });
-        addEventFilter(ScrollEvent.SCROLL, event -> {
+        stackPane.addEventFilter(ScrollEvent.SCROLL, event -> {
             if (!event.isControlDown()) return;
-            double oldScale = ImageScale.getScale() / 100;
+            double oldScale = imageScale.getScale() / 100;
 
             if (event.getDeltaY() > 0) {
-                ImageScale.upscale();
+                imageScale.upscale();
             } else {
-                ImageScale.downscale();
+                imageScale.downscale();
             }
 
-            double f = (ImageScale.getScale() / 100) / oldScale;
+            double f = (imageScale.getScale() / 100) / oldScale;
             double mouseX = event.getX();
             double mouseY = event.getY();
             imageX = mouseX - (mouseX - imageX) * f;
             imageY = mouseY - (mouseY - imageY) * f;
             drawImage(imageX, imageY);
         });
-        addEventFilter(MouseEvent.MOUSE_MOVED, event -> {
-            MousePosition.setX((event.getX() - imageX) / (ImageScale.getScale() / 100));
-            MousePosition.setY((event.getY() - imageY) / (ImageScale.getScale() / 100));
+        stackPane.addEventFilter(MouseEvent.MOUSE_MOVED, event -> {
+            MousePosition.setX((event.getX() - imageX) / (imageScale.getScale() / 100));
+            MousePosition.setY((event.getY() - imageY) / (imageScale.getScale() / 100));
         });
-        widthProperty().addListener((_, _, _) -> {
+        stackPane.widthProperty().addListener((_, _, _) -> {
             scaleToImage();
             centerImage();
         });
-        heightProperty().addListener((_, _, _) -> {
+        stackPane.heightProperty().addListener((_, _, _) -> {
             scaleToImage();
             centerImage();
         });
+
+//        imageScale.scaleProperty().addListener((_, _, newValue) -> {
+//            imageScale.percentProperty().set(ImageScale.toPercent((double) newValue));
+//        });
     }
 
     public void drawImage(double x, double y) {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         clearCanvas();
-        double width = image.getWidth() * ImageScale.getScale() / 100;
-        double height = image.getHeight() * ImageScale.getScale() / 100;
+        double width = image.getWidth() * imageScale.getScale() / 100;
+        double height = image.getHeight() * imageScale.getScale() / 100;
         gc.drawImage(image, x, y, width, height);
         imageX = x;
         imageY = y;
@@ -110,11 +122,11 @@ public class EditorPane extends StackPane {
     }
 
     public void centerImage() {
-        ImageScale.setScale(ImageScale.getDefaultEditorScale());
+        imageScale.setScale(imageScale.getDefaultEditorScale());
         double canvasCenterX = canvas.getWidth() / 2;
         double canvasCenterY = canvas.getHeight() / 2;
-        double imageWidth = image.getWidth() * ImageScale.getScale() / 100;
-        double imageHeight = image.getHeight() * ImageScale.getScale() / 100;
+        double imageWidth = image.getWidth() * imageScale.getScale() / 100;
+        double imageHeight = image.getHeight() * imageScale.getScale() / 100;
         double x = canvasCenterX - imageWidth / 2;
         double y = canvasCenterY - imageHeight / 2;
         drawImage(x, y);
@@ -124,19 +136,19 @@ public class EditorPane extends StackPane {
         double widthRatio = image.getWidth() / canvas.getWidth();
         double heightRatio = image.getHeight() / canvas.getHeight();
         double ratio = Math.max(widthRatio, heightRatio);
-        ImageScale.setDefaultEditorScale(75 / ratio);
+        imageScale.setDefaultEditorScale(75 / ratio);
     }
 
     public void upscale() {
-        double oldScale = ImageScale.getScale() / 100;
-        ImageScale.upscale();
+        double oldScale = imageScale.getScale() / 100;
+        imageScale.upscale();
         Point2D center = getImageCenter(oldScale);
         drawImage(center.getX(), center.getY());
     }
 
     public void downscale() {
-        double oldScale = ImageScale.getScale() / 100;
-        ImageScale.downscale();
+        double oldScale = imageScale.getScale() / 100;
+        imageScale.downscale();
         Point2D center = getImageCenter(oldScale);
         drawImage(center.getX(), center.getY());
     }
@@ -147,15 +159,15 @@ public class EditorPane extends StackPane {
 
     public void setImage(Image image) {
         this.image = image;
-        ImageBounds.setWidth(image.getWidth());
-        ImageBounds.setHeight(image.getHeight());
+        imageBounds.setWidth(image.getWidth());
+        imageBounds.setHeight(image.getHeight());
     }
 
     private Point2D getImageCenter(double oldScale) {
         double imageCenterX = imageX + (image.getWidth() * oldScale) / 2;
         double imageCenterY = imageY + (image.getHeight() * oldScale) / 2;
-        double newImageWidth = image.getWidth() * ImageScale.getScale() / 100;
-        double newImageHeight = image.getHeight() * ImageScale.getScale() / 100;
+        double newImageWidth = image.getWidth() * imageScale.getScale() / 100;
+        double newImageHeight = image.getHeight() * imageScale.getScale() / 100;
         double x = imageCenterX - newImageWidth / 2;
         double y = imageCenterY - newImageHeight / 2;
         return new Point2D(x, y);
@@ -163,10 +175,18 @@ public class EditorPane extends StackPane {
 
     public ChangeListener<Number> getChangeListener() {
         return (ObservableValue<? extends Number> _, Number _, Number newValue) -> {
-            double oldScale = ImageScale.getScale() / 100;
-            ImageScale.setScale(ImageScale.fromPercent((double) newValue));
+            double oldScale = imageScale.getScale() / 100;
+            imageScale.setScale(ImageScale.fromPercent((double) newValue));
             Point2D center = getImageCenter(oldScale);
             drawImage(center.getX(), center.getY());
         };
+    }
+
+    public ImageBounds getImageBounds() {
+        return imageBounds;
+    }
+
+    public ImageScale getImageScale() {
+        return imageScale;
     }
 }

@@ -1,6 +1,5 @@
 package com.calvinnordstrom.cnpaint.view;
 
-import com.calvinnordstrom.cnpaint.property.ImageBounds;
 import com.calvinnordstrom.cnpaint.property.ImageScale;
 import com.calvinnordstrom.cnpaint.property.MousePosition;
 import com.calvinnordstrom.cnpaint.view.node.DefaultButton;
@@ -17,17 +16,16 @@ import org.kordamp.ikonli.evaicons.Evaicons;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 public class EditorControlsPane extends BorderPane {
-    private final MainView mainView;
+    private final EditorPane editor;
     private final HBox right;
 
-    public EditorControlsPane(MainView mainView) {
-        this.mainView = mainView;
+    public EditorControlsPane(EditorPane editor) {
+        this.editor = editor;
         right = new HBox();
 
         init();
         initImageInfo();
         initImageControls();
-        setRight(right);
     }
 
     private void init() {
@@ -35,6 +33,7 @@ public class EditorControlsPane extends BorderPane {
         setBorder(new Border(new BorderStroke(Color.BLACK, Color.BLACK, Color.BLACK, Color.BLACK,
                 BorderStrokeStyle.SOLID, BorderStrokeStyle.NONE, BorderStrokeStyle.NONE, BorderStrokeStyle.NONE,
                 CornerRadii.EMPTY, new BorderWidths(1), Insets.EMPTY)));
+        setRight(right);
     }
 
     private void initImageInfo() {
@@ -48,8 +47,8 @@ public class EditorControlsPane extends BorderPane {
 
         DefaultLabel imageDimensions = new DefaultLabel();
         imageDimensions.setFontIcon(FontIcon.of(Entypo.IMAGE), 16, Color.WHITE);
-        imageDimensions.textProperty().bind(ImageBounds.widthProperty().asString("%.0f x ")
-                .concat(ImageBounds.heightProperty().asString("%.0f")));
+        imageDimensions.textProperty().bind(editor.getImageBounds().widthProperty().asString("%.0f x ")
+                .concat(editor.getImageBounds().heightProperty().asString("%.0f")));
         imageDimensions.setStyle("-fx-text-fill: white;");
 
         HBox imageInfoHBox = new HBox(mouseLocation, new Spacer(40, 0), imageDimensions, new Spacer(40, 0));
@@ -60,32 +59,32 @@ public class EditorControlsPane extends BorderPane {
 
     private void initImageControls() {
         Label scaleLabel = new Label();
-        scaleLabel.textProperty().bind(ImageScale.scaleProperty().asString("%.0f").concat("%"));
+        scaleLabel.textProperty().bind(editor.getImageScale().scaleProperty().asString("%.0f").concat("%"));
         scaleLabel.setStyle("-fx-text-fill: white;");
 
         DefaultButton downscaleButton = new DefaultButton();
         downscaleButton.setFontIcon(FontIcon.of(Evaicons.MINIMIZE_OUTLINE), 20, Color.WHITE);
-        mainView.buttons.put("downscaleButton", downscaleButton);
+        downscaleButton.setOnMouseClicked(_ -> editor.downscale());
 
-        Slider slider = new Slider(0, 100, 50);
-        ImageScale.percentProperty().bind(slider.valueProperty());
-        ImageScale.scaleProperty().addListener((_, _, newValue) -> {
+        Slider slider = new Slider(0, 100, ImageScale.toPercent(editor.getImageScale().getScale()));
+        editor.getImageScale().percentProperty().bind(slider.valueProperty());
+        editor.getImageScale().scaleProperty().addListener((_, _, newValue) -> {
             slider.setValue(ImageScale.toPercent((double) newValue));
         });
-        mainView.sliders.put("scaleSlider", slider);
+        slider.valueProperty().addListener(editor.getChangeListener());
 
         DefaultButton upscaleButton = new DefaultButton();
         upscaleButton.setFontIcon(FontIcon.of(Evaicons.MAXIMIZE_OUTLINE), 20, Color.WHITE);
-        mainView.buttons.put("upscaleButton", upscaleButton);
+        upscaleButton.setOnMouseClicked(_ -> editor.upscale());
 
         HBox sliderControls = new HBox(scaleLabel, new Spacer(10, 0), downscaleButton, slider, upscaleButton);
         sliderControls.setAlignment(Pos.CENTER);
 
         DefaultButton homeButton = new DefaultButton();
         homeButton.setFontIcon(FontIcon.of(Entypo.HOME), 20, Color.WHITE);
-        mainView.buttons.put("centerImage", homeButton);
+        homeButton.setOnMouseClicked(_ -> editor.centerImage());
 
-        HBox imageControlsHBox = new HBox(sliderControls, new Spacer(10, 0), homeButton);
+        HBox imageControlsHBox = new HBox(sliderControls, new Spacer(10, 0), homeButton, new Spacer(10, 0));
         imageControlsHBox.setAlignment(Pos.CENTER);
 
         right.getChildren().addAll(imageControlsHBox);
