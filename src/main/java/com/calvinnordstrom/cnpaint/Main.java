@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
@@ -30,6 +31,7 @@ public class Main extends Application {
         Scene scene = new Scene(controller.getView(), 960, 540);
         scene.setOnKeyPressed(keyEvent -> KeyListener.getInstance().keyPressed(keyEvent.getCode()));
         scene.setOnKeyReleased(keyEvent -> KeyListener.getInstance().keyReleased(keyEvent.getCode()));
+        scene.getStylesheets().add(Objects.requireNonNull(Main.class.getResource("css/main.css")).toExternalForm());
 
         stage.setTitle(TITLE);
         stage.setScene(scene);

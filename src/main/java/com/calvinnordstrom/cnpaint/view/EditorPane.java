@@ -8,7 +8,6 @@ import com.calvinnordstrom.cnpaint.util.DragContext;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Point2D;
-import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -22,6 +21,7 @@ public class EditorPane extends BorderPane {
     private final Canvas canvas;
     private final ImageBounds imageBounds;
     private final ImageScale imageScale;
+    private final EditorControlsPane editorControls;
     private Image image;
     private double imageX = 0;
     private double imageY = 0;
@@ -35,6 +35,9 @@ public class EditorPane extends BorderPane {
         canvas = new Canvas();
         imageBounds = new ImageBounds();
         imageScale = new ImageScale();
+        editorControls = new EditorControlsPane(this);
+
+        getStyleClass().add("editor-pane");
 
         setImage(image);
 
@@ -44,10 +47,8 @@ public class EditorPane extends BorderPane {
 
     private void init() {
         setCenter(stackPane);
-        stackPane.setStyle("-fx-background-color: rgb(80, 80, 80);");
 //        Image cursor = new Image(String.valueOf(Main.class.getResource("cursor/editor_cursor.png")));
 //        setCursor(new ImageCursor(cursor, cursor.getWidth() / 2, cursor.getHeight() / 2));
-        stackPane.setCursor(Cursor.CROSSHAIR);
         stackPane.setMinSize(0, 0);
 
         canvas.getGraphicsContext2D().setImageSmoothing(false);
@@ -101,10 +102,6 @@ public class EditorPane extends BorderPane {
             scaleToImage();
             centerImage();
         });
-
-//        imageScale.scaleProperty().addListener((_, _, newValue) -> {
-//            imageScale.percentProperty().set(ImageScale.toPercent((double) newValue));
-//        });
     }
 
     public void drawImage(double x, double y) {
@@ -153,16 +150,6 @@ public class EditorPane extends BorderPane {
         drawImage(center.getX(), center.getY());
     }
 
-    public Image getImage() {
-        return image;
-    }
-
-    public void setImage(Image image) {
-        this.image = image;
-        imageBounds.setWidth(image.getWidth());
-        imageBounds.setHeight(image.getHeight());
-    }
-
     private Point2D getImageCenter(double oldScale) {
         double imageCenterX = imageX + (image.getWidth() * oldScale) / 2;
         double imageCenterY = imageY + (image.getHeight() * oldScale) / 2;
@@ -188,5 +175,19 @@ public class EditorPane extends BorderPane {
 
     public ImageScale getImageScale() {
         return imageScale;
+    }
+
+    public EditorControlsPane getEditorControls() {
+        return editorControls;
+    }
+
+    public Image getImage() {
+        return image;
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
+        imageBounds.setWidth(image.getWidth());
+        imageBounds.setHeight(image.getHeight());
     }
 }

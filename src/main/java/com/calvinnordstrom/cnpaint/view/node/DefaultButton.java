@@ -1,7 +1,6 @@
 package com.calvinnordstrom.cnpaint.view.node;
 
 import javafx.geometry.Insets;
-import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 import org.kordamp.ikonli.javafx.FontIcon;
@@ -14,11 +13,12 @@ public class DefaultButton extends Button {
     public DefaultButton(String text) {
         super(text);
 
+        getStyleClass().add("default-button");
+
         init();
     }
 
     private void init() {
-        setCursor(Cursor.HAND);
         setFocused(false);
         setFocusTraversable(false);
     }

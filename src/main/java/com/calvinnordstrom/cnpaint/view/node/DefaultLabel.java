@@ -12,6 +12,8 @@ public class DefaultLabel extends Label {
     public DefaultLabel(String text) {
         super(text);
 
+        getStyleClass().add("default-label");
+
         init();
     }
 

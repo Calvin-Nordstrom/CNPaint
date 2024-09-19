@@ -5,12 +5,10 @@ import com.calvinnordstrom.cnpaint.view.node.EditorTab;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.BorderPane;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,21 +45,11 @@ public class MainView extends BorderPane {
         Menu viewMenu = new Menu("View");
 
         MenuBar menuBar = new MenuBar(fileMenu, editMenu, viewMenu);
-//        menuBar.setStyle("-fx-background-color: rgb(64, 64, 64);");
-//        menuBar.setBorder(new Border(new BorderStroke(Color.BLACK, Color.BLACK, Color.BLACK, Color.BLACK,
-//                BorderStrokeStyle.NONE, BorderStrokeStyle.NONE, BorderStrokeStyle.SOLID, BorderStrokeStyle.NONE,
-//                CornerRadii.EMPTY, new BorderWidths(1), Insets.EMPTY)));
         setTop(menuBar);
     }
 
     private void initLeft() {
-        VBox vBox = new VBox();
-        vBox.setStyle("-fx-background-color: rgb(64, 64, 64); -fx-padding: 3px;");
-        vBox.setBorder(new Border(new BorderStroke(Color.BLACK, Color.BLACK, Color.BLACK, Color.BLACK,
-                BorderStrokeStyle.NONE, BorderStrokeStyle.SOLID, BorderStrokeStyle.NONE, BorderStrokeStyle.NONE,
-                CornerRadii.EMPTY, new BorderWidths(1), Insets.EMPTY)));
-        vBox.setMinWidth(50);
-        setLeft(vBox);
+        setLeft(toolsPane);
     }
 
     private void initCenter() {
@@ -78,26 +66,20 @@ public class MainView extends BorderPane {
         tabPane.getTabs().addAll(one, two);
 
         tabPane.getSelectionModel().selectedItemProperty().addListener(((_, _, newValue) -> {
-            EditorTab tab = (EditorTab) newValue;
-            setBottom(tab.getEditorControls());
+            EditorPane editorPane = (EditorPane) newValue.getContent();
+            setBottom(editorPane.getEditorControls());
         }));
 
         setCenter(tabPane);
     }
 
     private void initRight() {
-        VBox vBox = new VBox();
-        vBox.setStyle("-fx-background-color: rgb(64, 64, 64); -fx-padding: 3px;");
-        vBox.setBorder(new Border(new BorderStroke(Color.BLACK, Color.BLACK, Color.BLACK, Color.BLACK,
-                BorderStrokeStyle.NONE, BorderStrokeStyle.NONE, BorderStrokeStyle.NONE, BorderStrokeStyle.SOLID,
-                CornerRadii.EMPTY, new BorderWidths(1), Insets.EMPTY)));
-        vBox.setMinWidth(400);
-        setRight(vBox);
+
     }
 
     private void initBottom() {
-        EditorTab tab = (EditorTab) tabPane.getSelectionModel().selectedItemProperty().get();
-        setBottom(tab.getEditorControls());
+        EditorPane editorPane = (EditorPane) tabPane.getSelectionModel().selectedItemProperty().get().getContent();
+        setBottom(editorPane.getEditorControls());
     }
 
     /* ****************************************************************

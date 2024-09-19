@@ -5,11 +5,10 @@ import com.calvinnordstrom.cnpaint.property.MousePosition;
 import com.calvinnordstrom.cnpaint.view.node.DefaultButton;
 import com.calvinnordstrom.cnpaint.view.node.DefaultLabel;
 import com.calvinnordstrom.cnpaint.view.node.Spacer;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import org.kordamp.ikonli.entypo.Entypo;
 import org.kordamp.ikonli.evaicons.Evaicons;
@@ -23,33 +22,27 @@ public class EditorControlsPane extends BorderPane {
         this.editor = editor;
         right = new HBox();
 
+        getStyleClass().add("editor-controls-pane");
+
         init();
         initImageInfo();
         initImageControls();
     }
 
     private void init() {
-        setStyle("-fx-background-color: rgb(64, 64, 64); -fx-padding: 3px;");
-        setBorder(new Border(new BorderStroke(Color.BLACK, Color.BLACK, Color.BLACK, Color.BLACK,
-                BorderStrokeStyle.SOLID, BorderStrokeStyle.NONE, BorderStrokeStyle.NONE, BorderStrokeStyle.NONE,
-                CornerRadii.EMPTY, new BorderWidths(1), Insets.EMPTY)));
         setRight(right);
     }
 
     private void initImageInfo() {
         DefaultLabel mouseLocation = new DefaultLabel();
         mouseLocation.setFontIcon(FontIcon.of(Entypo.MOUSE_POINTER), 16, Color.WHITE);
-//        mouseLocation.textProperty().bind(MousePosition.xProperty().asString("%.0f, ")
-//                .concat(MousePosition.yProperty().asString("%.0f")));
         mouseLocation.textProperty().bind(MousePosition.xIntProperty().asString()
                 .concat(", ").concat(MousePosition.yIntProperty().asString()));
-        mouseLocation.setStyle("-fx-text-fill: white;");
 
         DefaultLabel imageDimensions = new DefaultLabel();
         imageDimensions.setFontIcon(FontIcon.of(Entypo.IMAGE), 16, Color.WHITE);
         imageDimensions.textProperty().bind(editor.getImageBounds().widthProperty().asString("%.0f x ")
                 .concat(editor.getImageBounds().heightProperty().asString("%.0f")));
-        imageDimensions.setStyle("-fx-text-fill: white;");
 
         HBox imageInfoHBox = new HBox(mouseLocation, new Spacer(40, 0), imageDimensions, new Spacer(40, 0));
         imageInfoHBox.setAlignment(Pos.CENTER);
@@ -58,9 +51,8 @@ public class EditorControlsPane extends BorderPane {
     }
 
     private void initImageControls() {
-        Label scaleLabel = new Label();
+        DefaultLabel scaleLabel = new DefaultLabel();
         scaleLabel.textProperty().bind(editor.getImageScale().scaleProperty().asString("%.0f").concat("%"));
-        scaleLabel.setStyle("-fx-text-fill: white;");
 
         DefaultButton downscaleButton = new DefaultButton();
         downscaleButton.setFontIcon(FontIcon.of(Evaicons.MINIMIZE_OUTLINE), 20, Color.WHITE);
