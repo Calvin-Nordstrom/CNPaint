@@ -6,8 +6,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class KeyListener {
-    private static KeyListener instance;
-    private static final Set<KeyCode> pressedKeys = new HashSet<>();
+    private static final KeyListener instance = new KeyListener();
+    private final Set<KeyCode> pressedKeys = new HashSet<>();
 
     private KeyListener() {}
 
@@ -24,9 +24,6 @@ public class KeyListener {
     }
 
     public static KeyListener getInstance() {
-        if (instance == null) {
-            instance = new KeyListener();
-        }
         return instance;
     }
 }

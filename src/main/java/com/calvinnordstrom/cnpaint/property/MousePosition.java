@@ -16,7 +16,7 @@ import javafx.beans.property.SimpleIntegerProperty;
  * @author Calvin Nordstrom
  */
 public class MousePosition {
-    private static MousePosition instance;
+    private static final MousePosition instance = new MousePosition();
     private final DoubleProperty x = new SimpleDoubleProperty();
     private final DoubleProperty y = new SimpleDoubleProperty();
     private final IntegerProperty intX = new SimpleIntegerProperty();
@@ -114,9 +114,6 @@ public class MousePosition {
      * @return the {@code MousePosition} singleton instance
      */
     public static MousePosition getInstance() {
-        if (instance == null) {
-            instance = new MousePosition();
-        }
         return instance;
     }
 }
