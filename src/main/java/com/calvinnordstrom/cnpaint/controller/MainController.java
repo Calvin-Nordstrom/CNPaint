@@ -2,6 +2,7 @@ package com.calvinnordstrom.cnpaint.controller;
 
 import com.calvinnordstrom.cnpaint.model.MainModel;
 import com.calvinnordstrom.cnpaint.view.MainView;
+import com.calvinnordstrom.cnpaint.view.ServiceLocator;
 import javafx.application.Platform;
 import javafx.scene.Parent;
 
@@ -17,7 +18,7 @@ public class MainController {
     }
 
     private void initListeners() {
-        view.addMenuItemListener("close", _ -> close());
+        ServiceLocator.getMenuItem("close").setOnAction(_ -> close());
     }
 
     public void close() {

@@ -17,10 +17,10 @@ import javafx.beans.property.SimpleIntegerProperty;
  */
 public class MousePosition {
     private static MousePosition instance;
-    private final DoubleProperty x = new SimpleDoubleProperty(0);
-    private final DoubleProperty y = new SimpleDoubleProperty(0);
-    private final IntegerProperty intX = new SimpleIntegerProperty(0);
-    private final IntegerProperty intY = new SimpleIntegerProperty(0);
+    private final DoubleProperty x = new SimpleDoubleProperty();
+    private final DoubleProperty y = new SimpleDoubleProperty();
+    private final IntegerProperty intX = new SimpleIntegerProperty();
+    private final IntegerProperty intY = new SimpleIntegerProperty();
 
     private MousePosition() {
         x.addListener((_, _, _) -> intX.set(round(x.get())));

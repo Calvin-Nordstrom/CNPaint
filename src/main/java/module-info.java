@@ -5,6 +5,7 @@ module com.calvinnordstrom.cnpaint {
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.ikonli.entypo;
     requires org.kordamp.ikonli.evaicons;
+    requires org.jetbrains.annotations;
 
     exports com.calvinnordstrom.cnpaint;
     exports com.calvinnordstrom.cnpaint.controller;

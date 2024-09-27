@@ -55,7 +55,8 @@ public class ImageScale {
     }
 
     /**
-     * Sets the scale property to the specified scale.
+     * Sets the scale property to the specified scale. The scale will be
+     * clamped between {@code MIN_SCALE} and {@code MAX_SCALE}.
      *
      * @param scale the new scale
      */

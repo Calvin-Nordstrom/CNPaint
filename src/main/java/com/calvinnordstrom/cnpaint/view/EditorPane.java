@@ -21,10 +21,7 @@ public class EditorPane extends BorderPane {
     private final Canvas canvas;
     private final ImageBounds imageBounds;
     private final ImageScale imageScale;
-    private final EditorControlsPane editorControls;
     private Image image;
-    private double imageX = 0;
-    private double imageY = 0;
 
     public EditorPane() {
         this(new Image(String.valueOf(Main.class.getResource("default.png"))));
@@ -35,7 +32,6 @@ public class EditorPane extends BorderPane {
         canvas = new Canvas();
         imageBounds = new ImageBounds();
         imageScale = new ImageScale();
-        editorControls = new EditorControlsPane(this);
 
         getStyleClass().add("editor-pane");
 
@@ -64,14 +60,14 @@ public class EditorPane extends BorderPane {
             if (!event.isMiddleButtonDown()) return;
             dragContext.x = event.getX();
             dragContext.y = event.getY();
-            dragContext.dx = imageX;
-            dragContext.dy = imageY;
+            dragContext.dx = imageBounds.getX();
+            dragContext.dy = imageBounds.getY();
         });
         stackPane.addEventFilter(MouseEvent.MOUSE_DRAGGED, event -> {
             if (!event.isMiddleButtonDown()) return;
-            imageX = dragContext.dx + event.getX() - dragContext.x;
-            imageY = dragContext.dy + event.getY() - dragContext.y;
-            drawImage(imageX, imageY);
+            imageBounds.setX(dragContext.dx + event.getX() - dragContext.x);
+            imageBounds.setY(dragContext.dy + event.getY() - dragContext.y);
+            drawImage(imageBounds.getX(), imageBounds.getY());
         });
         stackPane.addEventFilter(ScrollEvent.SCROLL, event -> {
             if (!event.isControlDown()) return;
@@ -86,13 +82,13 @@ public class EditorPane extends BorderPane {
             double f = (imageScale.getScale() / 100) / oldScale;
             double mouseX = event.getX();
             double mouseY = event.getY();
-            imageX = mouseX - (mouseX - imageX) * f;
-            imageY = mouseY - (mouseY - imageY) * f;
-            drawImage(imageX, imageY);
+            imageBounds.setX(mouseX - (mouseX - imageBounds.getX()) * f);
+            imageBounds.setY(mouseY - (mouseY - imageBounds.getY()) * f);
+            drawImage(imageBounds.getX(), imageBounds.getY());
         });
         stackPane.addEventFilter(MouseEvent.MOUSE_MOVED, event -> {
-            MousePosition.setX((event.getX() - imageX) / (imageScale.getScale() / 100));
-            MousePosition.setY((event.getY() - imageY) / (imageScale.getScale() / 100));
+            MousePosition.setX((event.getX() - imageBounds.getX()) / (imageScale.getScale() / 100));
+            MousePosition.setY((event.getY() - imageBounds.getY()) / (imageScale.getScale() / 100));
         });
         stackPane.widthProperty().addListener((_, _, _) -> {
             scaleToImage();
@@ -110,8 +106,8 @@ public class EditorPane extends BorderPane {
         double width = image.getWidth() * imageScale.getScale() / 100;
         double height = image.getHeight() * imageScale.getScale() / 100;
         gc.drawImage(image, x, y, width, height);
-        imageX = x;
-        imageY = y;
+        imageBounds.setX(x);
+        imageBounds.setY(y);
     }
 
     private void clearCanvas() {
@@ -151,8 +147,8 @@ public class EditorPane extends BorderPane {
     }
 
     private Point2D getImageCenter(double oldScale) {
-        double imageCenterX = imageX + (image.getWidth() * oldScale) / 2;
-        double imageCenterY = imageY + (image.getHeight() * oldScale) / 2;
+        double imageCenterX = imageBounds.getX() + (image.getWidth() * oldScale) / 2;
+        double imageCenterY = imageBounds.getY() + (image.getHeight() * oldScale) / 2;
         double newImageWidth = image.getWidth() * imageScale.getScale() / 100;
         double newImageHeight = image.getHeight() * imageScale.getScale() / 100;
         double x = imageCenterX - newImageWidth / 2;
@@ -175,10 +171,6 @@ public class EditorPane extends BorderPane {
 
     public ImageScale getImageScale() {
         return imageScale;
-    }
-
-    public EditorControlsPane getEditorControls() {
-        return editorControls;
     }
 
     public Image getImage() {
