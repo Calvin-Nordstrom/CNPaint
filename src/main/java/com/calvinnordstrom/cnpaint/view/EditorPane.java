@@ -17,10 +17,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 
 public class EditorPane extends BorderPane {
-    private final StackPane stackPane;
-    private final Canvas canvas;
-    private final ImageBounds imageBounds;
-    private final ImageScale imageScale;
+    private final StackPane stackPane = new StackPane();
+    private final Canvas canvas = new Canvas();
+    private final ImageBounds imageBounds = new ImageBounds();
+    private final ImageScale imageScale = new ImageScale();
     private Image image;
 
     public EditorPane() {
@@ -28,11 +28,6 @@ public class EditorPane extends BorderPane {
     }
 
     public EditorPane(Image image) {
-        stackPane = new StackPane();
-        canvas = new Canvas();
-        imageBounds = new ImageBounds();
-        imageScale = new ImageScale();
-
         getStyleClass().add("editor-pane");
 
         setImage(image);

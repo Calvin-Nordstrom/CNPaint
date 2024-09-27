@@ -10,15 +10,11 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 
 public class MainView extends BorderPane {
-    private final ToolsPane toolsPane;
-    private final TabPane tabPane;
-    private final ControlsPane controlsPane;
+    private final ToolsPane toolsPane = new ToolsPane();
+    private final TabPane tabPane = new TabPane();
+    private final ControlsPane controlsPane = new ControlsPane();
 
     public MainView() {
-        toolsPane = new ToolsPane();
-        tabPane = new TabPane();
-        controlsPane = new ControlsPane();
-
         initTop();
         initLeft();
         initCenter();

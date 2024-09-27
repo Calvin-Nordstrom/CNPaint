@@ -16,11 +16,10 @@ import org.kordamp.ikonli.javafx.FontIcon;
 
 public class EditorControlsPane extends BorderPane {
     private final EditorPane editor;
-    private final HBox right;
+    private final HBox right = new HBox();
 
     public EditorControlsPane(EditorPane editor) {
         this.editor = editor;
-        right = new HBox();
 
         getStyleClass().add("editor-controls-pane");
 
