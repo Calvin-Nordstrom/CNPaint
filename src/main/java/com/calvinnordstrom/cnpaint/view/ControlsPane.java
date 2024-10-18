@@ -1,10 +1,9 @@
 package com.calvinnordstrom.cnpaint.view;
 
-import com.calvinnordstrom.cnpaint.view.node.DefaultLabel;
-import com.calvinnordstrom.cnpaint.view.node.Spacer;
+import com.calvinnordstrom.cnpaint.util.ServiceLocator;
+import com.calvinnordstrom.cnpaint.view.control.ColorControl;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 
 public class ControlsPane extends VBox {
     public ControlsPane() {
@@ -14,10 +13,12 @@ public class ControlsPane extends VBox {
     }
 
     private void init() {
-        DefaultLabel left = new DefaultLabel("Left:");
-        ColorPicker leftPicker = new ColorPicker(Color.BLACK);
-        DefaultLabel right = new DefaultLabel("Right:");
-        ColorPicker rightPicker = new ColorPicker(Color.WHITE);
-        getChildren().addAll(left, leftPicker, new Spacer(0, 10), right, rightPicker);
+        ColorControl colorControl = new ColorControl();
+        ServiceLocator.getInstance().register("color_control", colorControl);
+
+        getChildren().addAll(colorControl);
+
+        ColorPicker colorPicker = new ColorPicker();
+        getChildren().add(colorPicker);
     }
 }

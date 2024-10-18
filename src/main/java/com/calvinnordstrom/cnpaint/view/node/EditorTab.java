@@ -2,7 +2,7 @@ package com.calvinnordstrom.cnpaint.view.node;
 
 import com.calvinnordstrom.cnpaint.view.EditorControlsPane;
 import com.calvinnordstrom.cnpaint.view.EditorPane;
-import com.calvinnordstrom.cnpaint.view.ServiceLocator;
+import com.calvinnordstrom.cnpaint.util.ServiceLocator;
 import javafx.scene.control.Tab;
 
 public class EditorTab extends Tab {
@@ -12,12 +12,12 @@ public class EditorTab extends Tab {
         super(text, editor);
         this.editor = editor;
 
-        getStyleClass().add("default-tab");
+        getStyleClass().add("editor-tab");
 
         init();
     }
 
     private void init() {
-        ServiceLocator.register(editor, new EditorControlsPane(editor));
+        ServiceLocator.getInstance().register(editor, new EditorControlsPane(editor));
     }
 }

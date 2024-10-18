@@ -1,159 +1,154 @@
 package com.calvinnordstrom.cnpaint.view.control;
 
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.ObjectBinding;
-import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.LinearGradient;
-import javafx.scene.paint.Stop;
+import javafx.scene.shape.Rectangle;
 
-public class ColorControl extends VBox {
-    private final ObjectProperty<Color> leftColor = new SimpleObjectProperty<>(Color.BLACK);
-
-    private DoubleProperty hue = new SimpleDoubleProperty(-1);
-    private DoubleProperty sat = new SimpleDoubleProperty(-1);
-    private DoubleProperty bright = new SimpleDoubleProperty(-1);
-    private DoubleProperty alpha = new SimpleDoubleProperty(100) {
-        @Override protected void invalidated() {
-            setLeftColor(new Color(getLeftColor().getRed(), getLeftColor().getGreen(),
-                    getLeftColor().getBlue(), clamp(alpha.get() / 100)));
-        }
-    };
-
-    // TEMPORARY
-    int rectWidth = 200;
-    int rectHeight = 200;
+public class ColorControl extends HBox {
+    private final ObjectProperty<Color> primaryColor = new SimpleObjectProperty<>(Color.BLACK);
+    private final ObjectProperty<Color> secondaryColor = new SimpleObjectProperty<>(Color.WHITE);
 
     public ColorControl() {
-//        getStyleClass().add("color-control");
-        getStyleClass().add("my-custom-color");
+        super(10);
 
         init();
+        initLeft();
+        initRight();
     }
 
     private void init() {
+
+    }
+
+    private void initLeft() {
+        VBox left = new VBox(10);
+
         HBox gradientHBox = new HBox(10);
-        gradientHBox.getStyleClass().add("color-rect-pane");
+        double size = PresetColorsPane.getPixelWidth();
+        Rectangle gradientRect = new Rectangle(size, size);
+        Rectangle hueRect = new Rectangle(24, size);
+        gradientHBox.getChildren().addAll(gradientRect, hueRect);
+        left.getChildren().add(gradientHBox);
 
-        final Pane colorRectOpacityContainer = new StackPane();
+        left.getChildren().add(new PresetColorsPane());
 
-        Pane rectangle = new StackPane();
-        rectangle.setMinSize(rectWidth, rectHeight);
+        getChildren().add(left);
+    }
 
-        Pane colorRectHue = new Pane();
+    private void initRight() {
+        VBox right = new VBox(10);
 
-        colorRectHue.backgroundProperty().bind(new ObjectBinding<>() {
-            {
-                bind(hue);
-            }
+        Rectangle primaryRect = new Rectangle(100, 30);
+        primaryRect.fillProperty().bind(primaryColor);
+        primaryRect.widthProperty().bind(right.widthProperty().divide(2));
+        Rectangle secondaryRect = new Rectangle(100, 30);
+        secondaryRect.fillProperty().bind(secondaryColor);
+        secondaryRect.widthProperty().bind(right.widthProperty().divide(2));
+        HBox colorHBox = new HBox(primaryRect, secondaryRect);
+        right.getChildren().add(colorHBox);
 
-            @Override
-            protected Background computeValue() {
-                return new Background(new BackgroundFill(
-                        Color.hsb(hue.getValue(), 1.0, 1.0),
-                        CornerRadii.EMPTY, Insets.EMPTY));
-            }
-        });
+        TabPane controlTabPane = new TabPane();
+        Tab rgbTab = new Tab("RGB", new Rectangle(400, 200));
+        Tab hsbTab = new Tab("HSB", null);
+        Tab labTab = new Tab("Lab", null);
+        Tab cmykTab = new Tab("CMYK", null);
+        controlTabPane.getTabs().addAll(rgbTab, hsbTab, labTab, cmykTab);
+        right.getChildren().add(controlTabPane);
 
-        Pane rectangleOverlayOne = new Pane();
-        rectangleOverlayOne.setBackground(new Background(new BackgroundFill(
-                new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE,
-                        new Stop(0, Color.rgb(255, 255, 255, 1)),
-                        new Stop(1, Color.rgb(255, 255, 255, 0))),
-                CornerRadii.EMPTY, Insets.EMPTY)));
+        getChildren().add(right);
+    }
 
-        EventHandler<MouseEvent> rectMouseHandler = event -> {
-            final double x = event.getX();
-            final double y = event.getY();
-            sat.set(clamp(x / rectangle.getWidth()) * 100);
-            bright.set(100 - (clamp(y / rectangle.getHeight()) * 100));
-            updateHSBColor();
+    public Color getPrimaryColor() {
+        return primaryColor.get();
+    }
+
+    public void setPrimaryColor(Color color) {
+        primaryColor.set(color);
+    }
+
+    public ObjectProperty<Color> primaryColorProperty() {
+        return primaryColor;
+    }
+
+    public Color getSecondaryColor() {
+        return secondaryColor.get();
+    }
+
+    public void setSecondaryColor(Color color) {
+        secondaryColor.set(color);
+    }
+
+    public ObjectProperty<Color> secondaryColorProperty() {
+        return secondaryColor;
+    }
+
+    private class PresetColorsPane extends GridPane {
+        private static final int ROWS = 9;
+        private static final int COLUMNS = 13;
+        private static final double RECT_SIZE = 15;
+        private static final double GAP = 1;
+        private final ColorPair[] colors = {
+                new ColorPair(Color.rgb(0, 0, 0), Color.rgb(255, 255, 255)),
+                new ColorPair(Color.rgb(0, 51, 51), Color.rgb(204, 255, 255)),
+                new ColorPair(Color.rgb(0, 26, 128), Color.rgb(204, 230, 255)),
+                new ColorPair(Color.rgb(26, 0, 104), Color.rgb(230, 204, 255)),
+                new ColorPair(Color.rgb(51, 0, 51), Color.rgb(255, 204, 255)),
+                new ColorPair(Color.rgb(77, 0, 26), Color.rgb(255, 204, 230)),
+                new ColorPair(Color.rgb(153, 0, 0), Color.rgb(255, 204, 204)),
+                new ColorPair(Color.rgb(153, 51, 0), Color.rgb(255, 204, 179)),
+                new ColorPair(Color.rgb(153, 77, 0), Color.rgb(255, 230, 204)),
+                new ColorPair(Color.rgb(153, 102, 0), Color.rgb(255, 255, 179)),
+                new ColorPair(Color.rgb(153, 153, 0), Color.rgb(255, 255, 204)),
+                new ColorPair(Color.rgb(102, 102, 0), Color.rgb(230, 230, 204)),
+                new ColorPair(Color.rgb(0, 51, 0), Color.rgb(204, 255, 204)),
         };
 
-        Pane rectangleOverlayTwo = new Pane();
-        rectangleOverlayTwo.setBackground(new Background(new BackgroundFill(
-                new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE,
-                        new Stop(0, Color.rgb(0, 0, 0, 0)), new Stop(1, Color.rgb(0, 0, 0, 1))),
-                CornerRadii.EMPTY, Insets.EMPTY)));
-        rectangleOverlayTwo.setOnMouseDragged(rectMouseHandler);
-        rectangleOverlayTwo.setOnMousePressed(rectMouseHandler);
+        private PresetColorsPane() {
+            super(GAP, GAP);
 
-        Region colorRectIndicator = new Region();
-        colorRectIndicator.setId("color-rect-indicator");
-        colorRectIndicator.setManaged(false);
-        colorRectIndicator.setMouseTransparent(true);
-        colorRectIndicator.setCache(true);
-        colorRectIndicator.layoutXProperty().bind(
-                sat.divide(100).multiply(rectangle.widthProperty()));
-        colorRectIndicator.layoutYProperty().bind(
-                Bindings.subtract(1, bright.divide(100)).multiply(rectangle.heightProperty()));
-
-        Pane hueBar = new Pane();
-        hueBar.setMinWidth(20);
-        hueBar.setMinHeight(200);
-        hueBar.setBackground(new Background(new BackgroundFill(
-                createHueGradient(), CornerRadii.EMPTY, Insets.EMPTY)));
-        EventHandler<MouseEvent> hueBarHandler = event -> {
-            hue.set(clamp(event.getY() / rectangle.getWidth()) * 360);
-            updateHSBColor();
-        };
-        hueBar.setOnMousePressed(hueBarHandler);
-        hueBar.setOnMouseDragged(hueBarHandler);
-
-        Region hueBarIndicator = new Region();
-        hueBarIndicator.setId("color-bar-indicator");
-        hueBarIndicator.setMouseTransparent(true);
-        hueBarIndicator.setCache(true);
-        hueBarIndicator.layoutYProperty().bind(hue.divide(360).multiply(hueBar.heightProperty()));
-
-        colorRectOpacityContainer.opacityProperty().bind(alpha.divide(100));
-
-        hueBar.getChildren().setAll(hueBarIndicator);
-        colorRectOpacityContainer.getChildren().addAll(colorRectHue, rectangleOverlayOne, rectangleOverlayTwo);
-        rectangle.getChildren().addAll(colorRectOpacityContainer, colorRectIndicator);
-        gradientHBox.getChildren().addAll(rectangle, hueBar);
-
-        getChildren().add(gradientHBox);
-    }
-
-    public Color getLeftColor() {
-        return leftColor.get();
-    }
-
-    public void setLeftColor(Color color) {
-        leftColor.set(color);
-    }
-
-    public ObjectProperty<Color> leftColorProperty() {
-        return leftColor;
-    }
-
-    private void updateHSBColor() {
-        Color newColor = Color.hsb(hue.get(), clamp(sat.get() / 100),
-                clamp(bright.get() / 100), clamp(alpha.get() / 100));
-        setLeftColor(newColor);
-    }
-
-    private static LinearGradient createHueGradient() {
-        double offset;
-        Stop[] stops = new Stop[255];
-        for (int y = 0; y < 255; y++) {
-            offset = (1.0 / 255) * y;
-            int h = (int)((y / 255.0) * 360);
-            stops[y] = new Stop(offset, Color.hsb(h, 1.0, 1.0));
+            init();
         }
-        return new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);
-    }
 
-    private static double clamp(double value) {
-        return value < 0 ? 0 : value > 1 ? 1 : value;
+        private void init() {
+            for (int col = 0; col < COLUMNS; col++) {
+                Color first = colors[col].first;
+                Color second = colors[col].second;
+                for (int row = 0; row < ROWS; row++) {
+                    Rectangle r = new Rectangle(RECT_SIZE, RECT_SIZE);
+                    r.getStyleClass().add("preset-color-rect");
+                    Color color = first.interpolate(second, (double) row / (ROWS - 1));
+                    r.setFill(color);
+                    r.setOnMousePressed(event -> handleMousePressed(event, color));
+                    r.setOnMouseEntered(_ -> r.toFront());
+                    add(r, col, row + 1);
+                }
+            }
+        }
+
+        private void handleMousePressed(MouseEvent event, Color color) {
+            if (event.getButton().equals(MouseButton.PRIMARY)) {
+                primaryColor.set(color);
+            } else if (event.getButton().equals(MouseButton.SECONDARY)) {
+                secondaryColor.set(color);
+            }
+        }
+
+        private record ColorPair(Color first, Color second) {}
+
+        public static double getPixelWidth() {
+            return COLUMNS * RECT_SIZE + COLUMNS - GAP;
+        }
+
+        public static double getPixelHeight() {
+            return ROWS * RECT_SIZE + ROWS - GAP;
+        }
     }
 }

@@ -6,23 +6,22 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
 /**
- * {@code MousePosition} is a singleton class responsible for storing and
- * manipulating the mouse position within the editor.
- * <p>
- * Because only one image can be open at a time, the
- * singleton design pattern grants the ability to access and manipulate the
- * mouse position data from any part of the application.
+ * {@code MousePosition} is responsible for storing and manipulating the mouse
+ * position within the editor.
  *
  * @author Calvin Nordstrom
  */
 public class MousePosition {
-    private static final MousePosition instance = new MousePosition();
     private final DoubleProperty x = new SimpleDoubleProperty();
     private final DoubleProperty y = new SimpleDoubleProperty();
     private final IntegerProperty intX = new SimpleIntegerProperty();
     private final IntegerProperty intY = new SimpleIntegerProperty();
 
-    private MousePosition() {
+    /**
+     * Constructs a {@code MousePosition} with the default mouse position of
+     * {@code x = 0}, and {@code y = 0}.
+     */
+    public MousePosition() {
         x.addListener((_, _, _) -> intX.set(round(x.get())));
         y.addListener((_, _, _) -> intY.set(round(y.get())));
     }
@@ -32,8 +31,8 @@ public class MousePosition {
      *
      * @return the x position
      */
-    public static double getX() {
-        return getInstance().x.get();
+    public double getX() {
+        return x.get();
     }
 
     /**
@@ -41,8 +40,8 @@ public class MousePosition {
      *
      * @param x the new x position
      */
-    public static void setX(double x) {
-        getInstance().x.set(x);
+    public void setX(double x) {
+        this.x.set(x);
     }
 
     /**
@@ -51,8 +50,8 @@ public class MousePosition {
      *
      * @return the {@code DoubleProperty} x position
      */
-    public static DoubleProperty xProperty() {
-        return getInstance().x;
+    public DoubleProperty xProperty() {
+        return x;
     }
 
     /**
@@ -60,8 +59,8 @@ public class MousePosition {
      *
      * @return the y position
      */
-    public static double getY() {
-        return getInstance().y.get();
+    public double getY() {
+        return y.get();
     }
 
     /**
@@ -69,8 +68,8 @@ public class MousePosition {
      *
      * @param y the new y position
      */
-    public static void setY(double y) {
-        getInstance().y.set(y);
+    public void setY(double y) {
+        this.y.set(y);
     }
 
     /**
@@ -79,8 +78,17 @@ public class MousePosition {
      *
      * @return the {@code DoubleProperty} y position
      */
-    public static DoubleProperty yProperty() {
-        return getInstance().y;
+    public DoubleProperty yProperty() {
+        return y;
+    }
+
+    /**
+     * Returns the x position attribute of the mouse as an integer.
+     *
+     * @return the x position integer
+     */
+    public int getIntX() {
+        return intX.get();
     }
 
     /**
@@ -89,8 +97,17 @@ public class MousePosition {
      *
      * @return the {@code IntegerProperty} x position
      */
-    public static IntegerProperty xIntProperty() {
-        return getInstance().intX;
+    public IntegerProperty xIntProperty() {
+        return intX;
+    }
+
+    /**
+     * Returns the y position attribute of the mouse as an integer.
+     *
+     * @return the y position integer
+     */
+    public int getIntY() {
+        return intY.get();
     }
 
     /**
@@ -99,21 +116,11 @@ public class MousePosition {
      *
      * @return the {@code IntegerProperty} y position
      */
-    public static IntegerProperty yIntProperty() {
-        return getInstance().intY;
+    public IntegerProperty yIntProperty() {
+        return intY;
     }
 
-    private static int round(double value) {
+    private int round(double value) {
         return value < 0 ? (int) Math.floor(value) : (int) value;
-    }
-
-    /**
-     * Returns the singleton instance of the {@code MousePosition} class. An
-     * instance will be created if one does not already exist.
-     *
-     * @return the {@code MousePosition} singleton instance
-     */
-    public static MousePosition getInstance() {
-        return instance;
     }
 }

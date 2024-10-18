@@ -2,6 +2,7 @@ package com.calvinnordstrom.cnpaint.view;
 
 import com.calvinnordstrom.cnpaint.property.ImageScale;
 import com.calvinnordstrom.cnpaint.property.MousePosition;
+import com.calvinnordstrom.cnpaint.tool.ToolManager;
 import com.calvinnordstrom.cnpaint.view.node.DefaultButton;
 import com.calvinnordstrom.cnpaint.view.node.DefaultLabel;
 import com.calvinnordstrom.cnpaint.view.node.Spacer;
@@ -29,14 +30,19 @@ public class EditorControlsPane extends BorderPane {
     }
 
     private void init() {
+        ToolManager tm = ToolManager.getInstance();
+        DefaultLabel toolDescription = new DefaultLabel(tm.getTool().getDescription());
+        tm.toolProperty().addListener((_, _, newValue) -> toolDescription.setText(newValue.getDescription()));
+        setLeft(new HBox(new Spacer(10, 0), toolDescription));
+
         setRight(right);
     }
 
     private void initImageInfo() {
         DefaultLabel mouseLocation = new DefaultLabel();
         mouseLocation.setFontIcon(FontIcon.of(Entypo.MOUSE_POINTER), 16, Color.WHITE);
-        mouseLocation.textProperty().bind(MousePosition.xIntProperty().asString()
-                .concat(", ").concat(MousePosition.yIntProperty().asString()));
+        mouseLocation.textProperty().bind(editor.getMousePosition().xIntProperty().asString()
+                .concat(", ").concat(editor.getMousePosition().yIntProperty().asString()));
 
         DefaultLabel imageDimensions = new DefaultLabel();
         imageDimensions.setFontIcon(FontIcon.of(Entypo.IMAGE), 16, Color.WHITE);
@@ -59,9 +65,7 @@ public class EditorControlsPane extends BorderPane {
 
         Slider slider = new Slider(0, 100, ImageScale.toPercent(editor.getImageScale().getScale()));
         editor.getImageScale().percentProperty().bind(slider.valueProperty());
-        editor.getImageScale().scaleProperty().addListener((_, _, newValue) -> {
-            slider.setValue(ImageScale.toPercent((double) newValue));
-        });
+        editor.getImageScale().scaleProperty().addListener((_, _, newValue) -> slider.setValue(ImageScale.toPercent((double) newValue)));
         slider.valueProperty().addListener(editor.getChangeListener());
 
         DefaultButton upscaleButton = new DefaultButton();
