@@ -14,7 +14,7 @@ public class ControlsPane extends VBox {
 
     private void init() {
         ColorControl colorControl = new ColorControl();
-        ServiceLocator.getInstance().register("color_control", colorControl);
+        ServiceLocator.getInstance().register("color-control", colorControl);
 
         getChildren().addAll(colorControl);
 

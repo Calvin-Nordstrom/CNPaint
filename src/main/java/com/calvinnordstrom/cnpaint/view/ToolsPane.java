@@ -23,20 +23,20 @@ public class ToolsPane extends VBox {
         pencil.setFontIcon(FontIcon.of(Entypo.PENCIL), 30, Color.WHITE);
         pencil.getStyleClass().add("tool");
         pencil.getStyleClass().add("selected-tool");
-        serviceLocator.register("pencil", pencil);
+        serviceLocator.register("pencil-tool", pencil);
         lastSelectedTool = pencil;
         handleOnAction(pencil);
 
         DefaultButton paintbrush = new DefaultButton();
         paintbrush.setFontIcon(FontIcon.of(Entypo.BRUSH), 30, Color.WHITE);
         paintbrush.getStyleClass().add("tool");
-        serviceLocator.register("paintbrush", paintbrush);
+        serviceLocator.register("paintbrush-tool", paintbrush);
         handleOnAction(paintbrush);
 
         DefaultButton eraser = new DefaultButton();
         eraser.setFontIcon(FontIcon.of(Entypo.ERASER), 30, Color.WHITE);
         eraser.getStyleClass().add("tool");
-        serviceLocator.register("eraser", eraser);
+        serviceLocator.register("eraser-tool", eraser);
         handleOnAction(eraser);
 
         getChildren().addAll(pencil, paintbrush, eraser);
