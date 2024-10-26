@@ -9,23 +9,23 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
 /**
- * A utility class that provides methods for basic {@code Image} utilities and
- * manipulation.
- * <p>
- * This class provides methods for pixel manipulation.
+ * A utility class that provides methods for {@link Image} objects. This
+ * includes pixel manipulation and converters used by the editor.
+ *
+ * @author Calvin Nordstrom
  */
 public class ImageUtils {
     private ImageUtils() {}
 
     /**
-     * Converts an object of {@code Image} to its subclass
-     * {@code WritableImage}.
+     * Converts an object of {@link Image} to its subclass
+     * {@link WritableImage}.
      * <p>
      * The {@code width} and {@code height} of the image
      * are retained during this conversion.
      *
-     * @param image the {@code Image} to convert
-     * @return the {@code WritableImage}
+     * @param image the {@link Image} to convert
+     * @return the {@link WritableImage}
      */
     public static WritableImage toWritableImage(Image image) {
         return new WritableImage(image.getPixelReader(),
@@ -33,19 +33,19 @@ public class ImageUtils {
     }
 
     /**
-     * Retrieves the {@code Color} based on the specified {@code MouseEvent}.
+     * Retrieves the {@link Color} based on the specified {@link MouseEvent}.
      * <p>
-     * When the button of the {@code MouseEvent} is equal to
+     * When the button of the {@link MouseEvent} is equal to
      * {@code MouseButton.PRIMARY}, the primary color determined by the
-     * {@code ColorControl} will be returned.
+     * {@link ColorControl} will be returned.
      * <p>
-     * When the button of the {@code MouseEvent} is equal to
+     * When the button of the {@link MouseEvent} is equal to
      * {@code MouseButton.SECONDARY}, the secondary color determined by the
-     * {@code ColorControl} will be returned.
+     * {@link ColorControl} will be returned.
      *
-     * @param event the {@code MouseEvent} to evaluate
-     * @return the primary {@code Color} if the event's button is primary,
-     * or the secondary {@code Color} if the event's button is secondary.
+     * @param event the {@link MouseEvent} to evaluate
+     * @return the primary {@link Color} if the event's button is primary,
+     * or the secondary {@link Color} if the event's button is secondary.
      */
     public static Color getColor(MouseEvent event) {
         ColorControl colorControl = (ColorControl) ServiceLocator.getInstance().getNode("color_control");

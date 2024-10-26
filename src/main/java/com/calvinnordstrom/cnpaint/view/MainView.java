@@ -3,7 +3,6 @@ package com.calvinnordstrom.cnpaint.view;
 import com.calvinnordstrom.cnpaint.Main;
 import com.calvinnordstrom.cnpaint.tool.ToolManager;
 import com.calvinnordstrom.cnpaint.tool.ToolType;
-import com.calvinnordstrom.cnpaint.tool.control.ToolControlFactoryRegistry;
 import com.calvinnordstrom.cnpaint.util.ImageUtils;
 import com.calvinnordstrom.cnpaint.util.ServiceLocator;
 import com.calvinnordstrom.cnpaint.view.node.EditorTab;
@@ -46,11 +45,10 @@ public class MainView extends BorderPane {
         comboBox.getSelectionModel().selectFirst();
         comboBox.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) -> tm.setTool(newValue));
 
-        ToolControlFactoryRegistry tcfr = ToolControlFactoryRegistry.getInstance();
-        Pane toolControls = new Pane(tcfr.getToolControls(tm.getTool()));
+        Pane toolControls = new Pane(tm.getToolControls(tm.getTool()));
         tm.toolProperty().addListener((_, _, newValue) -> {
             comboBox.getSelectionModel().select(tm.getToolType(newValue));
-            toolControls.getChildren().setAll(tcfr.getToolControls(newValue));
+            toolControls.getChildren().setAll(tm.getToolControls(newValue));
         });
 
         setTop(new VBox(menuBar, new HBox(comboBox, toolControls)));

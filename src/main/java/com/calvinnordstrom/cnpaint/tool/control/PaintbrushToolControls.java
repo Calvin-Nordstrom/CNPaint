@@ -1,16 +1,16 @@
 package com.calvinnordstrom.cnpaint.tool.control;
 
-import com.calvinnordstrom.cnpaint.tool.PencilTool;
+import com.calvinnordstrom.cnpaint.tool.PaintbrushTool;
 import com.calvinnordstrom.cnpaint.tool.Tool;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 
-public class PencilToolControlFactory implements ToolControlFactory {
-    public PencilToolControlFactory() {}
+public class PaintbrushToolControls implements ToolControls {
+    public PaintbrushToolControls() {}
 
     @Override
     public Pane getControls(Tool tool) {
-        PencilTool pencilTool = (PencilTool) tool;
+        PaintbrushTool eraserTool = (PaintbrushTool) tool;
 
         HBox controls = new HBox();
 

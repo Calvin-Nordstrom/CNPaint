@@ -3,20 +3,15 @@ package com.calvinnordstrom.cnpaint.tool;
 import com.calvinnordstrom.cnpaint.property.MousePosition;
 import com.calvinnordstrom.cnpaint.util.DragContext;
 import com.calvinnordstrom.cnpaint.util.ImageUtils;
-import javafx.geometry.Point2D;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class PencilTool implements Tool {
     private final DragContext dragContext = new DragContext();
-    private final List<Point2D> points = new ArrayList<>();
 
     @Override
     public String getDescription() {
-        return "Left click to use primary color, right click to use secondary color.";
+        return "Draws one-pixel wide lines. Left click to use primary color, right click to use secondary color.";
     }
 
     @Override
