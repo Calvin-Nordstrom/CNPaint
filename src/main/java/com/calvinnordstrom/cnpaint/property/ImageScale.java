@@ -4,7 +4,7 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 
 /**
- * {@code ImageScale} is responsible for storing and manipulating the image
+ * {@link ImageScale} is responsible for storing and manipulating the image
  * scale for an editor.
  *
  * @author Calvin Nordstrom
@@ -31,7 +31,7 @@ public class ImageScale {
     private double defaultEditorScale = DEFAULT_SCALE;
 
     /**
-     * Constructs an {@code ImageScale} with the default scale and percent
+     * Constructs an {@link ImageScale} with the default scale and percent
      * properties and the default editor scale attribute.
      */
     public ImageScale() {}
@@ -46,15 +46,6 @@ public class ImageScale {
     }
 
     /**
-     * Returns the default editor scale attribute.
-     *
-     * @return the default editor scale
-     */
-    public double getDefaultEditorScale() {
-        return defaultEditorScale;
-    }
-
-    /**
      * Sets the scale property to the specified scale. The scale will be
      * clamped between {@code MIN_SCALE} and {@code MAX_SCALE}.
      *
@@ -62,6 +53,24 @@ public class ImageScale {
      */
     public void setScale(double scale) {
         this.scale.set(Math.clamp(scale, ImageScale.MIN_SCALE, ImageScale.MAX_SCALE));
+    }
+
+    /**
+     * Returns the {@link DoubleProperty} associated with the scale.
+     *
+     * @return the {@link DoubleProperty} scale
+     */
+    public DoubleProperty scaleProperty() {
+        return scale;
+    }
+
+    /**
+     * Returns the default editor scale attribute.
+     *
+     * @return the default editor scale
+     */
+    public double getDefaultEditorScale() {
+        return defaultEditorScale;
     }
 
     /**
@@ -74,18 +83,9 @@ public class ImageScale {
     }
 
     /**
-     * Returns the {@code DoubleProperty} associated with the scale.
+     * Returns the {@link DoubleProperty} associated with the scale percent.
      *
-     * @return the {@code DoubleProperty} scale
-     */
-    public DoubleProperty scaleProperty() {
-        return scale;
-    }
-
-    /**
-     * Returns the {@code DoubleProperty} associated with the scale percent.
-     *
-     * @return the {@code DoubleProperty} scale percent
+     * @return the {@link DoubleProperty} scale percent
      */
     public DoubleProperty percentProperty() {
         return percent;

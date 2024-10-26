@@ -6,7 +6,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
 /**
- * {@code MousePosition} is responsible for storing and manipulating the mouse
+ * {@link MousePosition} is responsible for storing and manipulating the mouse
  * position within the editor.
  *
  * @author Calvin Nordstrom
@@ -18,7 +18,7 @@ public class MousePosition {
     private final IntegerProperty intY = new SimpleIntegerProperty();
 
     /**
-     * Constructs a {@code MousePosition} with the default mouse position of
+     * Constructs a {@link MousePosition} with the default mouse position of
      * {@code x = 0}, and {@code y = 0}.
      */
     public MousePosition() {
@@ -45,10 +45,10 @@ public class MousePosition {
     }
 
     /**
-     * Returns the {@code DoubleProperty} associated with the precise x
+     * Returns the {@link DoubleProperty} associated with the precise x
      * position of the mouse.
      *
-     * @return the {@code DoubleProperty} x position
+     * @return the {@link DoubleProperty} x position
      */
     public DoubleProperty xProperty() {
         return x;
@@ -73,10 +73,10 @@ public class MousePosition {
     }
 
     /**
-     * Returns the {@code DoubleProperty} associated with the precise y
+     * Returns the {@link DoubleProperty} associated with the precise y
      * position of the mouse.
      *
-     * @return the {@code DoubleProperty} y position
+     * @return the {@link DoubleProperty} y position
      */
     public DoubleProperty yProperty() {
         return y;
@@ -92,10 +92,10 @@ public class MousePosition {
     }
 
     /**
-     * Returns the {@code IntegerProperty} associated with the integer x
+     * Returns the {@link IntegerProperty} associated with the integer x
      * position of the mouse.
      *
-     * @return the {@code IntegerProperty} x position
+     * @return the {@link IntegerProperty} x position
      */
     public IntegerProperty xIntProperty() {
         return intX;
@@ -111,10 +111,10 @@ public class MousePosition {
     }
 
     /**
-     * Returns the {@code IntegerProperty} associated with the integer y
+     * Returns the {@link IntegerProperty} associated with the integer y
      * position of the mouse.
      *
-     * @return the {@code IntegerProperty} y position
+     * @return the {@link IntegerProperty} y position
      */
     public IntegerProperty yIntProperty() {
         return intY;

@@ -4,7 +4,7 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 
 /**
- * {@code ImageBounds} is responsible for storing and manipulating the image
+ * {@link ImageBounds} is responsible for storing and manipulating the image
  * bounds for an editor.
  *
  * @author Calvin Nordstrom
@@ -16,7 +16,7 @@ public class ImageBounds {
     private final DoubleProperty height = new SimpleDoubleProperty();
 
     /**
-     * Constructs an {@code ImageBounds} with the default width and height
+     * Constructs an {@link ImageBounds} with the default width and height
      * properties.
      */
     public ImageBounds() {}
@@ -40,10 +40,10 @@ public class ImageBounds {
     }
 
     /**
-     * Returns the {@code DoubleProperty} associated with the x position of
+     * Returns the {@link DoubleProperty} associated with the x position of
      * the image.
      *
-     * @return the {@code DoubleProperty} x position
+     * @return the {@link DoubleProperty} x position
      */
     public DoubleProperty xProperty() {
         return x;
@@ -68,10 +68,10 @@ public class ImageBounds {
     }
 
     /**
-     * Returns the {@code DoubleProperty} associated with the y position of
+     * Returns the {@link DoubleProperty} associated with the y position of
      * the image.
      *
-     * @return the {@code DoubleProperty} y position
+     * @return the {@link DoubleProperty} y position
      */
     public DoubleProperty yProperty() {
         return y;
@@ -96,10 +96,10 @@ public class ImageBounds {
     }
 
     /**
-     * Returns the {@code DoubleProperty} associated with the width of the
+     * Returns the {@link DoubleProperty} associated with the width of the
      * image.
      *
-     * @return the {@code DoubleProperty} width
+     * @return the {@link DoubleProperty} width
      */
     public DoubleProperty widthProperty() {
         return width;
@@ -124,10 +124,10 @@ public class ImageBounds {
     }
 
     /**
-     * Returns the {@code DoubleProperty} associated with the height of the
+     * Returns the {@link DoubleProperty} associated with the height of the
      * image.
      *
-     * @return the {@code DoubleProperty} height
+     * @return the {@link DoubleProperty} height
      */
     public DoubleProperty heightProperty() {
         return height;
