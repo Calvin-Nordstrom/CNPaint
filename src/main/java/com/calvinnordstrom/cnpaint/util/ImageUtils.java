@@ -48,7 +48,7 @@ public class ImageUtils {
      * or the secondary {@link Color} if the event's button is secondary.
      */
     public static Color getColor(MouseEvent event) {
-        ColorControl colorControl = (ColorControl) ServiceLocator.getInstance().getNode("color_control");
+        ColorControl colorControl = (ColorControl) ServiceLocator.getInstance().getNode("color-control");
         if (event.getButton().equals(MouseButton.PRIMARY)) {
             return colorControl.getPrimaryColor();
         } else if (event.getButton().equals(MouseButton.SECONDARY)) {
