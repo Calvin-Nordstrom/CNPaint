@@ -17,10 +17,12 @@ import java.util.logging.Level;
 public class IntegerControl extends HBox {
     private final String text;
     private final IntegerProperty value;
+    private final Integer[] elements;
 
-    public IntegerControl(String text, IntegerProperty value) {
+    public IntegerControl(String text, IntegerProperty value, Integer... elements) {
         this.text = text;
         this.value = value;
+        this.elements = elements;
 
         getStyleClass().add("integer-control");
 
@@ -38,7 +40,7 @@ public class IntegerControl extends HBox {
 
         ComboBox<Integer> comboBox = new ComboBox<>();
         comboBox.setMaxWidth(100);
-        comboBox.getItems().addAll(2, 3, 4, 5, 6, 7, 8, 9, 10);
+        comboBox.getItems().setAll(elements);
         comboBox.getSelectionModel().selectFirst();
         comboBox.setEditable(true);
         comboBox.getEditor().textProperty().addListener((_, _, newValue) -> {
