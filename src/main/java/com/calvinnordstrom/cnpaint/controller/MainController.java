@@ -24,9 +24,9 @@ public class MainController {
 
         serviceLocator.getMenuItem("close").setOnAction(_ -> close());
 
-        serviceLocator.getNode("pencil").setOnMouseClicked(_ -> setTool(ToolType.PENCIL));
-        serviceLocator.getNode("paintbrush").setOnMouseClicked(_ -> setTool(ToolType.PAINTBRUSH));
-        serviceLocator.getNode("eraser").setOnMouseClicked(_ -> setTool(ToolType.ERASER));
+        serviceLocator.getNode("pencil-tool").setOnMouseClicked(_ -> setTool(ToolType.PENCIL));
+        serviceLocator.getNode("paintbrush-tool").setOnMouseClicked(_ -> setTool(ToolType.PAINTBRUSH));
+        serviceLocator.getNode("eraser-tool").setOnMouseClicked(_ -> setTool(ToolType.ERASER));
     }
 
     public void setTool(ToolType toolType) {
