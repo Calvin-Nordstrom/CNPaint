@@ -2,6 +2,8 @@ package com.calvinnordstrom.cnpaint.tool.control;
 
 import com.calvinnordstrom.cnpaint.tool.PaintbrushTool;
 import com.calvinnordstrom.cnpaint.tool.Tool;
+import com.calvinnordstrom.cnpaint.tool.ToolSettingsPool;
+import javafx.scene.Node;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 
@@ -10,10 +12,10 @@ public class PaintbrushToolControls implements ToolControls {
 
     @Override
     public Pane getControls(Tool tool) {
-        PaintbrushTool eraserTool = (PaintbrushTool) tool;
+        PaintbrushTool paintbrushTool = (PaintbrushTool) tool;
 
-        HBox controls = new HBox();
+        Node brushSizeControl = ToolSettingsPool.getInstance().getBrushSizeControl();
 
-        return controls;
+        return new HBox(5, brushSizeControl);
     }
 }

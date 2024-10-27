@@ -2,6 +2,8 @@ package com.calvinnordstrom.cnpaint.tool.control;
 
 import com.calvinnordstrom.cnpaint.tool.EraserTool;
 import com.calvinnordstrom.cnpaint.tool.Tool;
+import com.calvinnordstrom.cnpaint.tool.ToolSettingsPool;
+import javafx.scene.Node;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 
@@ -12,8 +14,8 @@ public class EraserToolControls implements ToolControls {
     public Pane getControls(Tool tool) {
         EraserTool eraserTool = (EraserTool) tool;
 
-        HBox controls = new HBox();
+        Node brushSizeControl = ToolSettingsPool.getInstance().getBrushSizeControl();
 
-        return controls;
+        return new HBox(5, brushSizeControl);
     }
 }

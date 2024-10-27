@@ -6,11 +6,12 @@ import com.calvinnordstrom.cnpaint.tool.ToolType;
 import com.calvinnordstrom.cnpaint.util.ImageUtils;
 import com.calvinnordstrom.cnpaint.util.ServiceLocator;
 import com.calvinnordstrom.cnpaint.view.node.EditorTab;
+import javafx.geometry.Orientation;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 public class MainView extends BorderPane {
@@ -45,13 +46,17 @@ public class MainView extends BorderPane {
         comboBox.getSelectionModel().selectFirst();
         comboBox.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) -> tm.setTool(newValue));
 
-        Pane toolControls = new Pane(tm.getToolControls(tm.getTool()));
+        HBox toolControls = new HBox(tm.getToolControls(tm.getTool()));
+        HBox.setHgrow(toolControls, Priority.ALWAYS);
         tm.toolProperty().addListener((_, _, newValue) -> {
             comboBox.getSelectionModel().select(tm.getToolType(newValue));
             toolControls.getChildren().setAll(tm.getToolControls(newValue));
         });
 
-        setTop(new VBox(menuBar, new HBox(comboBox, toolControls)));
+        HBox controlsPane = new HBox(5, comboBox, new Separator(Orientation.VERTICAL), toolControls);
+        controlsPane.getStyleClass().add("tool-controls");
+
+        setTop(new VBox(menuBar, controlsPane));
     }
 
     private void initLeft() {
