@@ -15,4 +15,5 @@ module com.calvinnordstrom.cnpaint {
     exports com.calvinnordstrom.cnpaint.property;
     exports com.calvinnordstrom.cnpaint.tool;
     exports com.calvinnordstrom.cnpaint.util;
+    exports com.calvinnordstrom.cnpaint.tool.control;
 }

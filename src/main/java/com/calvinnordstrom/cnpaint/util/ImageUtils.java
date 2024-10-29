@@ -1,12 +1,15 @@
 package com.calvinnordstrom.cnpaint.util;
 
 import com.calvinnordstrom.cnpaint.view.control.ColorControl;
+import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+
+import java.util.List;
 
 /**
  * A utility class that provides methods for {@link Image} objects. This
@@ -67,6 +70,15 @@ public class ImageUtils {
             int x = (int) Math.round(x0 + t * dx);
             int y = (int) Math.round(y0 + t * dy);
             pixelWriter.setColor(x, y, color);
+        }
+    }
+
+    public static void drawSpline(PixelWriter pixelWriter, Point2D P0, Point2D P1, Point2D P2, Point2D P3, double alpha, int steps) {
+        CatmullRomSpline spline = new CatmullRomSpline();
+        List<Point2D> splinePoints = spline.computeSpline(P0, P1, P2, P3, alpha, steps);
+
+        for (Point2D point : splinePoints) {
+            pixelWriter.setColor((int) point.getX(), (int) point.getY(), Color.BLACK);
         }
     }
 }

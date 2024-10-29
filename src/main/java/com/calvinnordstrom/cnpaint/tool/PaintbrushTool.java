@@ -1,7 +1,6 @@
 package com.calvinnordstrom.cnpaint.tool;
 
-import com.calvinnordstrom.cnpaint.property.MousePosition;
-import javafx.scene.image.WritableImage;
+import com.calvinnordstrom.cnpaint.view.EditorPane;
 import javafx.scene.input.MouseEvent;
 
 public class PaintbrushTool implements Tool {
@@ -11,17 +10,17 @@ public class PaintbrushTool implements Tool {
     }
 
     @Override
-    public void onMousePressed(MouseEvent event, WritableImage image, MousePosition position) {
+    public void onMousePressed(MouseEvent event, EditorPane editorPane) {
 
     }
 
     @Override
-    public void onMouseDragged(MouseEvent event, WritableImage image, MousePosition position) {
+    public void onMouseDragged(MouseEvent event, EditorPane editorPane) {
 
     }
 
     @Override
-    public void onMouseReleased(MouseEvent event, WritableImage image, MousePosition position) {
+    public void onMouseReleased(MouseEvent event, EditorPane editorPane) {
 
     }
 }

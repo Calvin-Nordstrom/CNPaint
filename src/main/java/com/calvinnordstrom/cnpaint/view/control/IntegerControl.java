@@ -41,7 +41,11 @@ public class IntegerControl extends HBox {
         ComboBox<Integer> comboBox = new ComboBox<>();
         comboBox.setMaxWidth(100);
         comboBox.getItems().setAll(elements);
-        comboBox.getSelectionModel().selectFirst();
+        if (value.get() > 0 && comboBox.getItems().contains(value.get())) {
+            comboBox.getSelectionModel().select(comboBox.getItems().indexOf(value.get()));
+        } else {
+            comboBox.getSelectionModel().selectFirst();
+        }
         comboBox.setEditable(true);
         comboBox.getEditor().textProperty().addListener((_, _, newValue) -> {
             if (newValue.matches("\\d*")) {

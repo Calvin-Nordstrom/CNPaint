@@ -1,13 +1,12 @@
 package com.calvinnordstrom.cnpaint.tool;
 
-import com.calvinnordstrom.cnpaint.property.MousePosition;
 import com.calvinnordstrom.cnpaint.tool.control.EraserToolControls;
 import com.calvinnordstrom.cnpaint.tool.control.PaintbrushToolControls;
 import com.calvinnordstrom.cnpaint.tool.control.PencilToolControls;
 import com.calvinnordstrom.cnpaint.tool.control.ToolControls;
+import com.calvinnordstrom.cnpaint.view.EditorPane;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 
@@ -33,21 +32,21 @@ public class ToolManager {
         controls.put(tool.getClass(), factory);
     }
 
-    public void handleMousePressed(MouseEvent event, WritableImage image, MousePosition position) {
+    public void handleMousePressed(MouseEvent event, EditorPane editorPane) {
         if (toolProperty.get() != null) {
-            toolProperty.get().onMousePressed(event, image, position);
+            toolProperty.get().onMousePressed(event, editorPane);
         }
     }
 
-    public void handleMouseDragged(MouseEvent event, WritableImage image, MousePosition position) {
+    public void handleMouseDragged(MouseEvent event, EditorPane editorPane) {
         if (toolProperty.get() != null) {
-            toolProperty.get().onMouseDragged(event, image, position);
+            toolProperty.get().onMouseDragged(event, editorPane);
         }
     }
 
-    public void handleMouseReleased(MouseEvent event, WritableImage image, MousePosition position) {
+    public void handleMouseReleased(MouseEvent event, EditorPane editorPane) {
         if (toolProperty.get() != null) {
-            toolProperty.get().onMouseReleased(event, image, position);
+            toolProperty.get().onMouseReleased(event, editorPane);
         }
     }
 

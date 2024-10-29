@@ -1,9 +1,8 @@
 package com.calvinnordstrom.cnpaint.tool;
 
-import com.calvinnordstrom.cnpaint.property.MousePosition;
 import com.calvinnordstrom.cnpaint.util.DragContext;
 import com.calvinnordstrom.cnpaint.util.ImageUtils;
-import javafx.scene.image.WritableImage;
+import com.calvinnordstrom.cnpaint.view.EditorPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
@@ -16,25 +15,28 @@ public class EraserTool implements Tool {
     }
 
     @Override
-    public void onMousePressed(MouseEvent event, WritableImage image, MousePosition position) {
-        int x = position.getIntX();
-        int y = position.getIntY();
+    public void onMousePressed(MouseEvent event, EditorPane editorPane) {
+        int x = editorPane.getMousePosition().getIntX();
+        int y = editorPane.getMousePosition().getIntY();
         dragContext.x = x;
         dragContext.y = y;
-        image.getPixelWriter().setColor(x, y, Color.TRANSPARENT);
+
+        editorPane.getImage().getPixelWriter().setColor(x, y, Color.TRANSPARENT);
     }
 
     @Override
-    public void onMouseDragged(MouseEvent event, WritableImage image, MousePosition position) {
-        int x = position.getIntX();
-        int y = position.getIntY();
-        ImageUtils.drawLine(image.getPixelWriter(), dragContext.x, dragContext.y, x, y, Color.TRANSPARENT);
+    public void onMouseDragged(MouseEvent event, EditorPane editorPane) {
+        int x = editorPane.getMousePosition().getIntX();
+        int y = editorPane.getMousePosition().getIntY();
+
+        ImageUtils.drawLine(editorPane.getImage().getPixelWriter(), dragContext.x, dragContext.y, x, y, Color.TRANSPARENT);
+
         dragContext.x = x;
         dragContext.y = y;
     }
 
     @Override
-    public void onMouseReleased(MouseEvent event, WritableImage image, MousePosition position) {
+    public void onMouseReleased(MouseEvent event, EditorPane editorPane) {
 
     }
 }

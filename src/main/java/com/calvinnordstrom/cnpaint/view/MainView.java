@@ -6,7 +6,6 @@ import com.calvinnordstrom.cnpaint.tool.ToolType;
 import com.calvinnordstrom.cnpaint.util.ImageUtils;
 import com.calvinnordstrom.cnpaint.util.ServiceLocator;
 import com.calvinnordstrom.cnpaint.view.node.EditorTab;
-import javafx.geometry.Orientation;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
@@ -53,7 +52,7 @@ public class MainView extends BorderPane {
             toolControls.getChildren().setAll(tm.getToolControls(newValue));
         });
 
-        HBox controlsPane = new HBox(5, comboBox, new Separator(Orientation.VERTICAL), toolControls);
+        HBox controlsPane = new HBox(5, comboBox, toolControls);
         controlsPane.getStyleClass().add("tool-controls");
 
         setTop(new VBox(menuBar, controlsPane));

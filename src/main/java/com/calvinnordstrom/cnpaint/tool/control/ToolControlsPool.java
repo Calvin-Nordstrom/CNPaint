@@ -1,4 +1,4 @@
-package com.calvinnordstrom.cnpaint.tool;
+package com.calvinnordstrom.cnpaint.tool.control;
 
 import com.calvinnordstrom.cnpaint.view.control.IntegerControl;
 import javafx.beans.property.IntegerProperty;
@@ -9,17 +9,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-public class ToolSettingsPool {
-    private static ToolSettingsPool instance;
+public class ToolControlsPool {
+    private static ToolControlsPool instance;
     private final IntegerProperty brushSize = new SimpleIntegerProperty(2) {
         @Override
         protected void invalidated() {
-            brushSize.set(Math.clamp(brushSize.get(), 1, 1000));
+            brushSize.set(Math.clamp(brushSize.get(), 1, 2000));
         }
     };
     private final Node brushSizeControl = new IntegerControl("Brush size:", brushSize, getBrushSizes());
 
-    private ToolSettingsPool() {}
+    private ToolControlsPool() {}
 
     public int getBrushSize() {
         return brushSize.get();
@@ -29,9 +29,9 @@ public class ToolSettingsPool {
         return brushSizeControl;
     }
 
-    public static ToolSettingsPool getInstance() {
+    public static ToolControlsPool getInstance() {
         if (instance == null) {
-            instance = new ToolSettingsPool();
+            instance = new ToolControlsPool();
         }
         return instance;
     }

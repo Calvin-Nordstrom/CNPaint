@@ -28,12 +28,7 @@ public class EditorPane extends StackPane {
     private WritableImage image;
 
     public EditorPane() {
-        getStyleClass().add("editor-pane");
-
-        init();
-        initEventHandlers();
-
-        setImage(ImageUtils.toWritableImage(Resources.DEFAULT_IMAGE));
+        this(ImageUtils.toWritableImage(Resources.DEFAULT_IMAGE));
     }
 
     public EditorPane(WritableImage image) {
@@ -48,20 +43,27 @@ public class EditorPane extends StackPane {
     private void init() {
         getChildren().add(stackPane);
         stackPane.setMinSize(0, 0);
+        stackPane.widthProperty().addListener((_, _, _) -> resetImage());
+        stackPane.heightProperty().addListener((_, _, _) -> resetImage());
         canvas.getGraphicsContext2D().setImageSmoothing(false);
         canvas.widthProperty().bind(stackPane.widthProperty());
         canvas.heightProperty().bind(stackPane.heightProperty());
-        stackPane.widthProperty().addListener((_, _, _) -> resetImage());
-        stackPane.heightProperty().addListener((_, _, _) -> resetImage());
-        stackPane.getChildren().addAll(canvas);
+        stackPane.getChildren().add(canvas);
     }
 
     private void initEventHandlers() {
+        stackPane.addEventFilter(MouseEvent.MOUSE_MOVED, this::handleMouseMoved);
         stackPane.addEventFilter(MouseEvent.MOUSE_PRESSED, this::handleMousePressed);
         stackPane.addEventFilter(MouseEvent.MOUSE_DRAGGED, this::handleMouseDragged);
         stackPane.addEventFilter(MouseEvent.MOUSE_RELEASED, this::handleMouseReleased);
         stackPane.addEventFilter(ScrollEvent.SCROLL, this::handleScroll);
-        stackPane.addEventFilter(MouseEvent.MOUSE_MOVED, this::handleMouseMoved);
+    }
+
+    private void handleMouseMoved(MouseEvent event) {
+        mousePosition.setX((event.getX() - imageBounds.getX())
+                / (imageScale.getScale() / 100));
+        mousePosition.setY((event.getY() - imageBounds.getY())
+                / (imageScale.getScale() / 100));
     }
 
     private void handleMousePressed(MouseEvent event) {
@@ -71,35 +73,31 @@ public class EditorPane extends StackPane {
             dragContext.dx = imageBounds.getX();
             dragContext.dy = imageBounds.getY();
         } else {
-            ToolManager.getInstance().handleMousePressed(event, image, mousePosition);
-            drawImage();
+            ToolManager.getInstance().handleMousePressed(event, this);
         }
     }
 
-    public void handleMouseDragged(MouseEvent event) {
+    private void handleMouseDragged(MouseEvent event) {
         if (event.isMiddleButtonDown()) {
             imageBounds.setX(dragContext.dx + event.getX() - dragContext.x);
             imageBounds.setY(dragContext.dy + event.getY() - dragContext.y);
+            drawImage();
         } else {
-            mousePosition.setX((event.getX() - imageBounds.getX()) / (imageScale.getScale() / 100));
-            mousePosition.setY((event.getY() - imageBounds.getY()) / (imageScale.getScale() / 100));
-            ToolManager.getInstance().handleMouseDragged(event, image, mousePosition);
+            mousePosition.setX((event.getX() - imageBounds.getX())
+                    / (imageScale.getScale() / 100));
+            mousePosition.setY((event.getY() - imageBounds.getY())
+                    / (imageScale.getScale() / 100));
+            ToolManager.getInstance().handleMouseDragged(event, this);
         }
-        drawImage();
     }
 
-    public void handleMouseReleased(MouseEvent event) {
+    private void handleMouseReleased(MouseEvent event) {
         if (!event.isMiddleButtonDown()) {
-            ToolManager.getInstance().handleMouseReleased(event, image, mousePosition);
+            ToolManager.getInstance().handleMouseReleased(event, this);
         }
     }
 
-    public void handleMouseMoved(MouseEvent event) {
-        mousePosition.setX((event.getX() - imageBounds.getX()) / (imageScale.getScale() / 100));
-        mousePosition.setY((event.getY() - imageBounds.getY()) / (imageScale.getScale() / 100));
-    }
-
-    public void handleScroll(ScrollEvent event) {
+    private void handleScroll(ScrollEvent event) {
         if (event.isControlDown()) {
             double oldScale = imageScale.getScale() / 100;
 
@@ -131,15 +129,9 @@ public class EditorPane extends StackPane {
         imageBounds.setY(y);
     }
 
-    public void centerImage() {
-        imageScale.setScale(imageScale.getDefaultEditorScale());
-        double centerX = canvas.getWidth() / 2;
-        double centerY = canvas.getHeight() / 2;
-        double width = image.getWidth() * imageScale.getScale() / 100;
-        double height = image.getHeight() * imageScale.getScale() / 100;
-        double x = centerX - width / 2;
-        double y = centerY - height / 2;
-        drawImage(x, y);
+    public void resetImage() {
+        scaleToImage();
+        centerImage();
     }
 
     public void scaleToImage() {
@@ -149,9 +141,15 @@ public class EditorPane extends StackPane {
         imageScale.setDefaultEditorScale(85 / ratio);
     }
 
-    public void resetImage() {
-        scaleToImage();
-        centerImage();
+    public void centerImage() {
+        imageScale.setScale(imageScale.getDefaultEditorScale());
+        double centerX = canvas.getWidth() / 2;
+        double centerY = canvas.getHeight() / 2;
+        double width = image.getWidth() * imageScale.getScale() / 100;
+        double height = image.getHeight() * imageScale.getScale() / 100;
+        double x = centerX - width / 2;
+        double y = centerY - height / 2;
+        drawImage(x, y);
     }
 
     public void upscale() {
