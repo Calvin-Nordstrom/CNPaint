@@ -72,7 +72,7 @@ public class EditorControlsPane extends BorderPane {
 
         RepeatButton downscaleButton = new RepeatButton();
         downscaleButton.setFontIcon(FontIcon.of(Evaicons.MINIMIZE_OUTLINE), 20, Color.WHITE);
-        downscaleButton.setEventHandler(_ -> editor.downscale());
+        downscaleButton.setOnFinished(_ -> editor.downscale());
 
         Slider slider = new Slider(0, 100, ImageScale.toPercent(imageScale.getScale()));
         imageScale.percentProperty().bind(slider.valueProperty());
@@ -83,7 +83,7 @@ public class EditorControlsPane extends BorderPane {
 
         RepeatButton upscaleButton = new RepeatButton();
         upscaleButton.setFontIcon(FontIcon.of(Evaicons.MAXIMIZE_OUTLINE), 20, Color.WHITE);
-        upscaleButton.setEventHandler(_ -> editor.upscale());
+        upscaleButton.setOnFinished(_ -> editor.upscale());
 
         HBox sliderControls = new HBox(scaleLabel, new Spacer(10, 0),
                 downscaleButton, slider, upscaleButton);

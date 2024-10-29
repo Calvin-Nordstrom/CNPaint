@@ -1,5 +1,6 @@
 package com.calvinnordstrom.cnpaint.view.node;
 
+import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
@@ -20,7 +21,7 @@ import javafx.util.Duration;
 public class RepeatButton extends DefaultButton {
     private int duration;
     private int delay;
-    private EventHandler<ActionEvent> eventHandler;
+    private EventHandler<ActionEvent> onFinished;
     private Timeline timeline = new Timeline();
     private PauseTransition pauseTransition;
 
@@ -40,13 +41,13 @@ public class RepeatButton extends DefaultButton {
      *
      * @param delay the delay in milliseconds
      * @param duration the duration in milliseconds
-     * @param eventHandler the event handler
+     * @param onFinished the on finished event handler
      */
-    public RepeatButton(int delay, int duration, EventHandler<ActionEvent> eventHandler) {
+    public RepeatButton(int delay, int duration, EventHandler<ActionEvent> onFinished) {
         super();
         this.delay = delay;
         this.duration = duration;
-        this.eventHandler = eventHandler;
+        this.onFinished = onFinished;
 
         refresh();
         init();
@@ -94,19 +95,19 @@ public class RepeatButton extends DefaultButton {
     }
 
     /**
-     * Sets the event handler to the specified event handler.
+     * Sets the on finished event handler to the specified event handler.
      *
-     * @param eventHandler the event handler
+     * @param onFinished the on finished event handler
      */
-    public void setEventHandler(EventHandler<ActionEvent> eventHandler) {
-        this.eventHandler = eventHandler;
+    public void setOnFinished(EventHandler<ActionEvent> onFinished) {
+        this.onFinished = onFinished;
         refresh();
     }
 
     private void refresh() {
-        KeyFrame keyFrame = new KeyFrame(Duration.millis(duration), eventHandler);
+        KeyFrame keyFrame = new KeyFrame(Duration.millis(duration), onFinished);
         timeline = new Timeline(keyFrame);
-        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.setCycleCount(Animation.INDEFINITE);
         pauseTransition = new PauseTransition(Duration.millis(delay));
     }
 }

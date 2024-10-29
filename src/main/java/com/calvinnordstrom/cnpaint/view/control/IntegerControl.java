@@ -36,7 +36,7 @@ public class IntegerControl extends HBox {
 
         RepeatButton decreaseButton = new RepeatButton();
         decreaseButton.setFontIcon(FontIcon.of(Evaicons.MINIMIZE_OUTLINE), 20, Color.WHITE);
-        decreaseButton.setEventHandler(_ -> value.set(value.get() - 1));
+        decreaseButton.setOnFinished(_ -> value.set(value.get() - 1));
 
         ComboBox<Integer> comboBox = new ComboBox<>();
         comboBox.setMaxWidth(100);
@@ -60,7 +60,7 @@ public class IntegerControl extends HBox {
 
         RepeatButton increaseButton = new RepeatButton();
         increaseButton.setFontIcon(FontIcon.of(Evaicons.MAXIMIZE_OUTLINE), 20, Color.WHITE);
-        increaseButton.setEventHandler(_ -> value.set(value.get() + 1));
+        increaseButton.setOnFinished(_ -> value.set(value.get() + 1));
 
         value.addListener((_, _, newValue) -> {
             comboBox.getEditor().setText(String.valueOf(newValue));
