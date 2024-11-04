@@ -8,6 +8,7 @@ import com.calvinnordstrom.cnpaint.util.ServiceLocator;
 import com.calvinnordstrom.cnpaint.view.node.EditorTab;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -26,16 +27,7 @@ public class MainView extends BorderPane {
     }
 
     private void initTop() {
-        Menu fileMenu = new Menu("File");
-        MenuItem close = new MenuItem("Close");
-        ServiceLocator.getInstance().register("close", close);
-        fileMenu.getItems().add(close);
-
-        Menu editMenu = new Menu("Edit");
-
-        Menu viewMenu = new Menu("View");
-
-        MenuBar menuBar = new MenuBar(fileMenu, editMenu, viewMenu);
+        MenuPane menuPane = new MenuPane();
 
         ToolManager tm = ToolManager.getInstance();
         ComboBox<ToolType> comboBox = new ComboBox<>();
@@ -43,7 +35,9 @@ public class MainView extends BorderPane {
             comboBox.getItems().add(toolType);
         }
         comboBox.getSelectionModel().selectFirst();
-        comboBox.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) -> tm.setTool(newValue));
+        comboBox.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) -> {
+            tm.setTool(newValue);
+        });
 
         HBox toolControls = new HBox(tm.getToolControls(tm.getTool()));
         HBox.setHgrow(toolControls, Priority.ALWAYS);
@@ -55,7 +49,7 @@ public class MainView extends BorderPane {
         HBox controlsPane = new HBox(5, comboBox, toolControls);
         controlsPane.getStyleClass().add("tool-controls");
 
-        setTop(new VBox(menuBar, controlsPane));
+        setTop(new VBox(menuPane, controlsPane));
     }
 
     private void initLeft() {
@@ -87,7 +81,20 @@ public class MainView extends BorderPane {
     }
 
     private void initBottom() {
-        EditorPane editorPane = (EditorPane) tabPane.getSelectionModel().selectedItemProperty().get().getContent();
+        EditorPane editorPane = (EditorPane) tabPane.getSelectionModel()
+                .selectedItemProperty().get().getContent();
         setBottom(ServiceLocator.getInstance().getEditorControlsPane(editorPane));
+    }
+
+    public void drawImage() {
+        EditorPane editorPane = (EditorPane) tabPane.getSelectionModel()
+                .selectedItemProperty().get().getContent();
+        editorPane.drawImage();
+    }
+
+    public WritableImage getCurrentImage() {
+        EditorPane editorPane = (EditorPane) tabPane.getSelectionModel()
+                .selectedItemProperty().get().getContent();
+        return editorPane.getImage();
     }
 }

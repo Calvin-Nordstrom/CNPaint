@@ -1,4 +1,4 @@
-package com.calvinnordstrom.cnpaint.view.menu;
+package com.calvinnordstrom.cnpaint.view.stage;
 
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
