@@ -24,6 +24,7 @@ public class MenuPane extends MenuBar {
         add(adjustmentsMenu, "grayscale", new MenuItem("Grayscale"));
         add(adjustmentsMenu, "auto-level", new MenuItem("Auto-Level"));
         add(adjustmentsMenu, "invert-colors", new MenuItem("Invert Colors"));
+        add(adjustmentsMenu, "invert-alpha", new MenuItem("Invert Alpha"));
 
         Menu effectsMenu = new Menu("Effects");
 

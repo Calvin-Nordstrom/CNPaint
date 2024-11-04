@@ -41,6 +41,11 @@ public class MainController {
             Task<Void> task = ImageUtils.invertColors(view.getCurrentImage());
             setUpTask(text, task);
         });
+        serviceLocator.getMenuItem("invert-alpha").setOnAction(_ -> {
+            String text = serviceLocator.getMenuItem("invert-alpha").getText();
+            Task<Void> task = ImageUtils.invertAlpha(view.getCurrentImage());
+            setUpTask(text, task);
+        });
 
         serviceLocator.getNode("pencil-tool").setOnMouseClicked(_ -> setTool(ToolType.PENCIL));
         serviceLocator.getNode("paintbrush-tool").setOnMouseClicked(_ -> setTool(ToolType.PAINTBRUSH));
