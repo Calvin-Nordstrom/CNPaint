@@ -1,6 +1,9 @@
 package com.calvinnordstrom.cnpaint.controller;
 
-import com.calvinnordstrom.cnpaint.adjustment.*;
+import com.calvinnordstrom.cnpaint.adjustment.AutoLevel;
+import com.calvinnordstrom.cnpaint.adjustment.Grayscale;
+import com.calvinnordstrom.cnpaint.adjustment.InvertAlpha;
+import com.calvinnordstrom.cnpaint.adjustment.InvertColors;
 import com.calvinnordstrom.cnpaint.model.MainModel;
 import com.calvinnordstrom.cnpaint.tool.ToolManager;
 import com.calvinnordstrom.cnpaint.tool.ToolType;
@@ -13,6 +16,7 @@ import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 public class MainController {
     private final MainModel model;
@@ -51,7 +55,7 @@ public class MainController {
         });
         serviceLocator.getMenuItem("hue-saturation").setOnAction(_ -> {
             String text = serviceLocator.getMenuItem("hue-saturation").getText();
-            initMenu(text, new Scene(new HueSaturation()));
+            initStage(text, new Scene(new HueSaturation()));
         });
 
         serviceLocator.getNode("pencil-tool").setOnMouseClicked(_ -> setTool(ToolType.PENCIL));
@@ -60,7 +64,7 @@ public class MainController {
     }
 
     private void initTask(String text, Task<Void> task) {
-        ProgressStage stage = new ProgressStage(text);
+        ProgressStage stage = new ProgressStage(getStage(), text);
         stage.show();
         task.progressProperty().addListener((_, _, newValue) -> {
             stage.setProgress((double) newValue);
@@ -74,10 +78,14 @@ public class MainController {
         });
     }
 
-    private void initMenu(String text, Scene scene) {
-        DefaultStage menu = new DefaultStage(text);
-        menu.setScene(scene);
-        menu.show();
+    private void initStage(String title, Scene scene) {
+        DefaultStage stage = new DefaultStage(getStage(), title);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private Stage getStage() {
+        return (Stage) view.getScene().getWindow();
     }
 
     public void setTool(ToolType toolType) {
