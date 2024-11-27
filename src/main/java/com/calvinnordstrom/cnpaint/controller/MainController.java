@@ -1,13 +1,13 @@
 package com.calvinnordstrom.cnpaint.controller;
 
-import com.calvinnordstrom.cnpaint.adjustment.Adjustments;
+import com.calvinnordstrom.cnpaint.adjustment.*;
 import com.calvinnordstrom.cnpaint.model.MainModel;
 import com.calvinnordstrom.cnpaint.tool.ToolManager;
 import com.calvinnordstrom.cnpaint.tool.ToolType;
 import com.calvinnordstrom.cnpaint.util.ServiceLocator;
 import com.calvinnordstrom.cnpaint.view.MainView;
 import com.calvinnordstrom.cnpaint.view.adjustment.HueSaturation;
-import com.calvinnordstrom.cnpaint.view.stage.DefaultMenu;
+import com.calvinnordstrom.cnpaint.view.stage.DefaultStage;
 import com.calvinnordstrom.cnpaint.view.stage.ProgressStage;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -31,22 +31,22 @@ public class MainController {
         serviceLocator.getMenuItem("close").setOnAction(_ -> close());
         serviceLocator.getMenuItem("grayscale").setOnAction(_ -> {
             String text = serviceLocator.getMenuItem("grayscale").getText();
-            Task<Void> task = Adjustments.grayscale(view.getCurrentImage());
+            Task<Void> task = Grayscale.apply(view.getCurrentImage());
             initTask(text, task);
         });
         serviceLocator.getMenuItem("auto-level").setOnAction(_ -> {
             String text = serviceLocator.getMenuItem("auto-level").getText();
-            Task<Void> task = Adjustments.autoLevel(view.getCurrentImage());
+            Task<Void> task = AutoLevel.apply(view.getCurrentImage());
             initTask(text, task);
         });
         serviceLocator.getMenuItem("invert-colors").setOnAction(_ -> {
             String text = serviceLocator.getMenuItem("invert-colors").getText();
-            Task<Void> task = Adjustments.invertColors(view.getCurrentImage());
+            Task<Void> task = InvertColors.apply(view.getCurrentImage());
             initTask(text, task);
         });
         serviceLocator.getMenuItem("invert-alpha").setOnAction(_ -> {
             String text = serviceLocator.getMenuItem("invert-alpha").getText();
-            Task<Void> task = Adjustments.invertAlpha(view.getCurrentImage());
+            Task<Void> task = InvertAlpha.apply(view.getCurrentImage());
             initTask(text, task);
         });
         serviceLocator.getMenuItem("hue-saturation").setOnAction(_ -> {
@@ -75,7 +75,7 @@ public class MainController {
     }
 
     private void initMenu(String text, Scene scene) {
-        DefaultMenu menu = new DefaultMenu(text);
+        DefaultStage menu = new DefaultStage(text);
         menu.setScene(scene);
         menu.show();
     }
