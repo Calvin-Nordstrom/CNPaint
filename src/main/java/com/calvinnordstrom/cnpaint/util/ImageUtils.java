@@ -1,11 +1,8 @@
 package com.calvinnordstrom.cnpaint.util;
 
 import com.calvinnordstrom.cnpaint.view.control.ColorControl;
-import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
-import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseButton;
@@ -14,8 +11,6 @@ import javafx.scene.paint.Color;
 
 import java.util.List;
 
-import static com.calvinnordstrom.cnpaint.util.ColorUtils.clamp;
-
 /**
  * A utility class that provides methods for {@link Image} objects, including
  * converters and pixel manipulation.
@@ -23,8 +18,6 @@ import static com.calvinnordstrom.cnpaint.util.ColorUtils.clamp;
  * @author Calvin Nordstrom
  */
 public class ImageUtils {
-    private static final int PROGRESS_THRESHOLD = 500;
-
     private ImageUtils() {}
 
     /**
@@ -146,207 +139,5 @@ public class ImageUtils {
             pixelWriter.setColor((int) point.getX(),
                     (int) point.getY(), Color.BLACK);
         }
-    }
-
-    /* ***************************************************
-     *                Image Adjustments                  *
-     *****************************************************/
-
-    /**
-     * Applies a grayscale filter to the specified image.
-     * <p>
-     * This method creates a daemon task that will process each pixel by
-     * calculating the average of the RGB values to obtain the grayscale value,
-     * and updating the pixel color.
-     * <p>
-     * The task progress is updated throughout the process. This can be
-     * retrieved through the returned {@link Task<Void>} object.
-     *
-     * @param image the image to apply the adjustment on
-     * @return the {@link Task<Void>} that performs the adjustment
-     */
-    public static Task<Void> grayscale(WritableImage image) {
-        Task<Void> task = new Task<>() {
-            @Override
-            protected Void call() {
-                PixelReader reader = image.getPixelReader();
-                PixelWriter writer = image.getPixelWriter();
-                int width = (int) image.getWidth();
-                int height = (int) image.getHeight();
-
-                for (int y = 0; y < height; y++) {
-                    for (int x = 0; x < width; x++) {
-                        int pixel = reader.getArgb(x, y);
-                        int a = (pixel >> 24) & 0xFF;
-                        int r = (pixel >> 16) & 0xFF;
-                        int g = (pixel >> 8) & 0xFF;
-                        int b = pixel & 0xFF;
-                        int gray = (int) ((r + g + b) / 3.0);
-                        int grayPixel = (a << 24) | (gray << 16) | (gray << 8) | gray;
-                        writer.setArgb(x, y, grayPixel);
-                    }
-                    if (y % PROGRESS_THRESHOLD == 0) {
-                        updateProgress(y + 1, height);
-                    }
-                }
-                return null;
-            }
-        };
-
-        startTask(task);
-
-        return task;
-    }
-
-    public static Task<Void> autoLevel(WritableImage image) {
-        Task<Void> task = new Task<>() {
-            @Override
-            protected Void call() {
-                PixelReader reader = image.getPixelReader();
-                PixelWriter writer = image.getPixelWriter();
-                int width = (int) image.getWidth();
-                int height = (int) image.getHeight();
-                double minRed = 1.0, maxRed = 0.0;
-                double minGreen = 1.0, maxGreen = 0.0;
-                double minBlue = 1.0, maxBlue = 0.0;
-                Color[][] newColors = new Color[width][height];
-
-                for (int y = 0; y < height; y++) {
-                    for (int x = 0; x < width; x++) {
-                        Color color = reader.getColor(x, y);
-                        minRed = Math.min(minRed, color.getRed());
-                        maxRed = Math.max(maxRed, color.getRed());
-                        minGreen = Math.min(minGreen, color.getGreen());
-                        maxGreen = Math.max(maxGreen, color.getGreen());
-                        minBlue = Math.min(minBlue, color.getBlue());
-                        maxBlue = Math.max(maxBlue, color.getBlue());
-                    }
-                    if (y % PROGRESS_THRESHOLD == 0) {
-                        updateProgress(y, height - 1);
-                    }
-                }
-
-                for (int y = 0; y < height; y++) {
-                    for (int x = 0; x < width; x++) {
-                        Color color = reader.getColor(x, y);
-//                        double newRed = (color.getRed() - minRed) / (maxRed - minRed);
-//                        double newGreen = (color.getGreen() - minGreen) / (maxGreen - minGreen);
-//                        double newBlue = (color.getBlue() - minBlue) / (maxBlue - minBlue);
-                        double newRed = (maxRed - minRed) == 0 ? color.getRed() : (color.getRed() - minRed) / (maxRed - minRed);
-                        double newGreen = (maxGreen - minGreen) == 0 ? color.getGreen() : (color.getGreen() - minGreen) / (maxGreen - minGreen);
-                        double newBlue = (maxBlue - minBlue) == 0 ? color.getBlue() : (color.getBlue() - minBlue) / (maxBlue - minBlue);
-                        newColors[x][y] = new Color(clamp(newRed), clamp(newGreen), clamp(newBlue), color.getOpacity());
-//                        writer.setColor(x, y, new Color(clamp(newRed), clamp(newGreen), clamp(newBlue), color.getOpacity()));
-                    }
-                    if (y % PROGRESS_THRESHOLD == 0) {
-                        updateProgress(y + height, 2.0 * height - 1);
-                    }
-                }
-
-                Platform.runLater(() -> {
-                    for (int y = 0; y < height; y++) {
-                        for (int x = 0; x < width; x++) {
-                            writer.setColor(x, y, newColors[x][y]);
-                        }
-                    }
-                });
-
-                return null;
-            }
-        };
-
-        startTask(task);
-
-        return task;
-    }
-
-    /**
-     * Inverts the colors of the specified image.
-     * <p>
-     * This method creates a daemon task that will process each pixel by
-     * flipping the bits of the RGB value, and updating the pixel color.
-     * <p>
-     * The task progress is updated throughout the process. This can be
-     * retrieved through the returned {@link Task<Void>} object.
-     *
-     * @param image the image to apply the adjustment on
-     * @return the {@link Task<Void>} that performs the adjustment
-     */
-    public static Task<Void> invertColors(WritableImage image) {
-        Task<Void> task = new Task<>() {
-            @Override
-            protected Void call() {
-                PixelReader reader = image.getPixelReader();
-                PixelWriter writer = image.getPixelWriter();
-                int width = (int) image.getWidth();
-                int height = (int) image.getHeight();
-
-                for (int y = 0; y < height; y++) {
-                    for (int x = 0; x < width; x++) {
-                        int pixel = reader.getArgb(x, y);
-                        int invertedPixel = (pixel & 0xFF000000) | (~pixel & 0x00FFFFFF);
-                        writer.setArgb(x, y, invertedPixel);
-                    }
-                    if (y % PROGRESS_THRESHOLD == 0) {
-                        updateProgress(y, height);
-                    }
-                }
-
-                return null;
-            }
-        };
-
-        startTask(task);
-
-        return task;
-    }
-
-    /**
-     * Inverts the alpha component of the specified image.
-     * <p>
-     * This method creates a daemon task that will process each pixel by
-     * flipping the bits of the alpha value, and updating the pixel color.
-     * <p>
-     * The task progress is updated throughout the process. This can be
-     * retrieved through the returned {@link Task<Void>} object.
-     *
-     * @param image the image to apply the adjustment on
-     * @return the {@link Task<Void>} that performs the adjustment
-     */
-    public static Task<Void> invertAlpha(WritableImage image) {
-        Task<Void> task = new Task<>() {
-            @Override
-            protected Void call() {
-                PixelReader reader = image.getPixelReader();
-                PixelWriter writer = image.getPixelWriter();
-                int width = (int) image.getWidth();
-                int height = (int) image.getHeight();
-
-                for (int y = 0; y < height; y++) {
-                    for (int x = 0; x < width; x++) {
-                        int pixel = reader.getArgb(x, y);
-                        int a = (pixel >> 24) & 0xFF;
-                        int invertedA = 255 - a;
-                        int invertedPixel = (invertedA << 24) | (pixel & 0x00FFFFFF);
-                        writer.setArgb(x, y, invertedPixel);
-                    }
-                    if (y % PROGRESS_THRESHOLD == 0) {
-                        updateProgress(y, height);
-                    }
-                }
-
-                return null;
-            }
-        };
-
-        startTask(task);
-
-        return task;
-    }
-
-    private static void startTask(Task<Void> task) {
-        Thread thread = new Thread(task);
-        thread.setDaemon(true);
-        thread.start();
     }
 }

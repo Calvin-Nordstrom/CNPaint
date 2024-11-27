@@ -1,15 +1,18 @@
 package com.calvinnordstrom.cnpaint.controller;
 
+import com.calvinnordstrom.cnpaint.adjustment.Adjustments;
 import com.calvinnordstrom.cnpaint.model.MainModel;
 import com.calvinnordstrom.cnpaint.tool.ToolManager;
 import com.calvinnordstrom.cnpaint.tool.ToolType;
-import com.calvinnordstrom.cnpaint.util.ImageUtils;
 import com.calvinnordstrom.cnpaint.util.ServiceLocator;
 import com.calvinnordstrom.cnpaint.view.MainView;
+import com.calvinnordstrom.cnpaint.view.adjustment.HueSaturation;
+import com.calvinnordstrom.cnpaint.view.stage.DefaultMenu;
 import com.calvinnordstrom.cnpaint.view.stage.ProgressStage;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 
 public class MainController {
     private final MainModel model;
@@ -28,23 +31,27 @@ public class MainController {
         serviceLocator.getMenuItem("close").setOnAction(_ -> close());
         serviceLocator.getMenuItem("grayscale").setOnAction(_ -> {
             String text = serviceLocator.getMenuItem("grayscale").getText();
-            Task<Void> task = ImageUtils.grayscale(view.getCurrentImage());
-            setUpTask(text, task);
+            Task<Void> task = Adjustments.grayscale(view.getCurrentImage());
+            initTask(text, task);
         });
         serviceLocator.getMenuItem("auto-level").setOnAction(_ -> {
             String text = serviceLocator.getMenuItem("auto-level").getText();
-            Task<Void> task = ImageUtils.autoLevel(view.getCurrentImage());
-            setUpTask(text, task);
+            Task<Void> task = Adjustments.autoLevel(view.getCurrentImage());
+            initTask(text, task);
         });
         serviceLocator.getMenuItem("invert-colors").setOnAction(_ -> {
             String text = serviceLocator.getMenuItem("invert-colors").getText();
-            Task<Void> task = ImageUtils.invertColors(view.getCurrentImage());
-            setUpTask(text, task);
+            Task<Void> task = Adjustments.invertColors(view.getCurrentImage());
+            initTask(text, task);
         });
         serviceLocator.getMenuItem("invert-alpha").setOnAction(_ -> {
             String text = serviceLocator.getMenuItem("invert-alpha").getText();
-            Task<Void> task = ImageUtils.invertAlpha(view.getCurrentImage());
-            setUpTask(text, task);
+            Task<Void> task = Adjustments.invertAlpha(view.getCurrentImage());
+            initTask(text, task);
+        });
+        serviceLocator.getMenuItem("hue-saturation").setOnAction(_ -> {
+            String text = serviceLocator.getMenuItem("hue-saturation").getText();
+            initMenu(text, new Scene(new HueSaturation()));
         });
 
         serviceLocator.getNode("pencil-tool").setOnMouseClicked(_ -> setTool(ToolType.PENCIL));
@@ -52,19 +59,25 @@ public class MainController {
         serviceLocator.getNode("eraser-tool").setOnMouseClicked(_ -> setTool(ToolType.ERASER));
     }
 
-    private void setUpTask(String text, Task<Void> task) {
-        ProgressStage progressStage = new ProgressStage(text);
-        progressStage.show();
+    private void initTask(String text, Task<Void> task) {
+        ProgressStage stage = new ProgressStage(text);
+        stage.show();
         task.progressProperty().addListener((_, _, newValue) -> {
-            progressStage.setProgress((double) newValue);
+            stage.setProgress((double) newValue);
         });
         task.setOnSucceeded(_ -> {
             view.drawImage();
-            progressStage.dispose();
+            stage.dispose();
         });
         task.setOnFailed(_ -> {
             System.out.println("Failed?");
         });
+    }
+
+    private void initMenu(String text, Scene scene) {
+        DefaultMenu menu = new DefaultMenu(text);
+        menu.setScene(scene);
+        menu.show();
     }
 
     public void setTool(ToolType toolType) {
