@@ -14,17 +14,18 @@ public class MenuPane extends MenuBar {
 
     private void init() {
         Menu fileMenu = new Menu("File");
-        add(fileMenu, "close", new MenuItem("Close"));
+        add(fileMenu, "exit", new MenuItem("Exit"));
 
         Menu editMenu = new Menu("Edit");
 
         Menu viewMenu = new Menu("View");
 
-        Menu adjustmentsMenu = new Menu("Adjustments");
+        Menu adjustmentsMenu = new Menu("Adjustment");
         add(adjustmentsMenu, "grayscale", new MenuItem("Grayscale"));
         add(adjustmentsMenu, "auto-level", new MenuItem("Auto-Level"));
         add(adjustmentsMenu, "invert-colors", new MenuItem("Invert Colors"));
         add(adjustmentsMenu, "invert-alpha", new MenuItem("Invert Alpha"));
+        add(adjustmentsMenu, "hue-saturation", new MenuItem("Hue / Saturation"));
 
         Menu effectsMenu = new Menu("Effects");
 

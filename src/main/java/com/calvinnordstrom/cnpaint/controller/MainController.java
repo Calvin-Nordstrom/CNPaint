@@ -28,7 +28,7 @@ public class MainController {
     private void initEventHandlers() {
         ServiceLocator serviceLocator = ServiceLocator.getInstance();
 
-        serviceLocator.getMenuItem("close").setOnAction(_ -> close());
+        serviceLocator.getMenuItem("exit").setOnAction(_ -> exit());
         serviceLocator.getMenuItem("grayscale").setOnAction(_ -> {
             String text = serviceLocator.getMenuItem("grayscale").getText();
             Task<Void> task = Grayscale.apply(view.getCurrentImage());
@@ -85,7 +85,7 @@ public class MainController {
         tm.setTool(toolType);
     }
 
-    public void close() {
+    public void exit() {
         Platform.exit();
     }
 
