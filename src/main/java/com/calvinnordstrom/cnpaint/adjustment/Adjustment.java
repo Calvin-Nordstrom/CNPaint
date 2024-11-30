@@ -2,7 +2,7 @@ package com.calvinnordstrom.cnpaint.adjustment;
 
 import javafx.concurrent.Task;
 
-public abstract class Adjustment {
+class Adjustment {
     static final int PROGRESS_THRESHOLD = 500;
 
     Adjustment() {}

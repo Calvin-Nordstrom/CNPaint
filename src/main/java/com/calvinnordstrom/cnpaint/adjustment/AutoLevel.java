@@ -6,9 +6,10 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
+import static com.calvinnordstrom.cnpaint.adjustment.Adjustment.startTask;
 import static com.calvinnordstrom.cnpaint.util.ColorUtils.clamp;
 
-public class AutoLevel extends Adjustment {
+public class AutoLevel {
     private AutoLevel() {}
 
     public static Task<Void> apply(WritableImage image) {

@@ -5,7 +5,10 @@ import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 
-public class InvertAlpha extends Adjustment {
+import static com.calvinnordstrom.cnpaint.adjustment.Adjustment.PROGRESS_THRESHOLD;
+import static com.calvinnordstrom.cnpaint.adjustment.Adjustment.startTask;
+
+public class InvertAlpha {
     private InvertAlpha() {}
 
     /**
